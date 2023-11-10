@@ -10,6 +10,20 @@
 import UIKit
 import AVFoundation
 
+
+struct ProductResponse: Decodable {
+    var code: String
+    var status: Int
+    var product: Product
+}
+
+struct Product: Decodable {
+    var productName: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case productName = "product_name"
+    }
+}
 class BarcodeScanView: UIViewController {
     
     var avCaptureSession: AVCaptureSession!
@@ -113,9 +127,53 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
         dismiss(animated: true)
     }
     
+    func search(code: String) {
+        let urlString = "https://world.openfoodfacts.org/api/v2/product/\(code)"
+        print("Searching open food facts for \(urlString)")
+        
+        guard let url = URL(string: urlString) else {
+            print("Url does not work.")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            // Check for errors
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            //Check for valid server response
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode),
+                  let data = data else {
+                print("Server error or no data")
+                return
+            }
+            
+            // Decode the JSON data
+            do {
+                let productResponse = try JSONDecoder().decode(ProductResponse.self, from: data)
+                print("Made an API Call and the code is: \(productResponse.code)")
+                if productResponse.status == 0 {
+                    print("Unable to find this item in database, try scanning its Nutrition Facts!")
+                }
+                else {
+                    print("Also wondering what the name is:  \(String(describing: productResponse.product.productName))")
+                }
+            }
+                catch {
+                    print("Decoding JSON Error: \(error)")
+            }
+        }
+        
+
+        task.resume()
+    }
+    
     func found(code: String) {
         print(code)
-        
+        search(code: code)
         let detailedVC = DetailedViewController()
         detailedVC.code = code
         navigationController?.pushViewController(detailedVC, animated: true)
