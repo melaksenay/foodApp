@@ -21,7 +21,5 @@
 			</array>
 		</dict>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>This app uses the camera for scanning barcodes</string>
 </dict>
 </plist>

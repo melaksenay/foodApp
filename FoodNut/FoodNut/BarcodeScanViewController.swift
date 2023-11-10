@@ -56,7 +56,10 @@ class BarcodeScanView: UIViewController {
             self.avPreviewLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 100)
             self.avPreviewLayer.videoGravity = .resizeAspectFill
             self.view.layer.addSublayer(self.avPreviewLayer)
-            self.avCaptureSession.startRunning()
+            //background thread for UI responsiveness.
+            DispatchQueue.global(qos:.background).async {
+                self.avCaptureSession.startRunning()
+            }
         }
     }
     
@@ -72,7 +75,10 @@ class BarcodeScanView: UIViewController {
         super.viewWillAppear(animated)
         
         if (avCaptureSession?.isRunning == false) {
-            avCaptureSession.startRunning()
+            //background thread for UI responsiveness.
+            DispatchQueue.global(qos:.background).async {
+                self.avCaptureSession.startRunning()
+            }
         }
     }
     
