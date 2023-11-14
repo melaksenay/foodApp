@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		08A52B382B02C142009062B8 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 08A52B372B02C142009062B8 /* FirebaseAuth */; };
-		08A52B3A2B02CEA1009062B8 /* FoodCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A52B392B02CEA1009062B8 /* FoodCollectionViewCell.swift */; };
 		08EC9CDF2AFC1B6200A705B8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EC9CDE2AFC1B6200A705B8 /* AppDelegate.swift */; };
 		08EC9CE12AFC1B6200A705B8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EC9CE02AFC1B6200A705B8 /* SceneDelegate.swift */; };
 		08EC9CE32AFC1B6200A705B8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EC9CE22AFC1B6200A705B8 /* ViewController.swift */; };
@@ -21,7 +19,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		08A52B392B02CEA1009062B8 /* FoodCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodCollectionViewCell.swift; sourceTree = "<group>"; };
 		08EC9CDB2AFC1B6200A705B8 /* FoodNut.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoodNut.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08EC9CDE2AFC1B6200A705B8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		08EC9CE02AFC1B6200A705B8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -40,7 +37,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08A52B382B02C142009062B8 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,7 +72,6 @@
 				08EC9CE92AFC1B6300A705B8 /* LaunchScreen.storyboard */,
 				4D10E81A2B02C34E00D76A32 /* onboarding.swift */,
 				08EC9CEC2AFC1B6300A705B8 /* Info.plist */,
-				08A52B392B02CEA1009062B8 /* FoodCollectionViewCell.swift */,
 			);
 			path = FoodNut;
 			sourceTree = "<group>";
@@ -97,9 +92,6 @@
 			dependencies = (
 			);
 			name = FoodNut;
-			packageProductDependencies = (
-				08A52B372B02C142009062B8 /* FirebaseAuth */,
-			);
 			productName = FoodNut;
 			productReference = 08EC9CDB2AFC1B6200A705B8 /* FoodNut.app */;
 			productType = "com.apple.product-type.application";
@@ -128,9 +120,6 @@
 				Base,
 			);
 			mainGroup = 08EC9CD22AFC1B6200A705B8;
-			packageReferences = (
-				08A52B362B02C142009062B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-			);
 			productRefGroup = 08EC9CDC2AFC1B6200A705B8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -162,11 +151,7 @@
 				08EC9CDF2AFC1B6200A705B8 /* AppDelegate.swift in Sources */,
 				4158C68A2AFC693E005A6B06 /* DetailedViewController.swift in Sources */,
 				4158C6882AFC6481005A6B06 /* BarcodeScanViewController.swift in Sources */,
-<<<<<<< HEAD
-				08A52B3A2B02CEA1009062B8 /* FoodCollectionViewCell.swift in Sources */,
-=======
 				4D10E81B2B02C34E00D76A32 /* onboarding.swift in Sources */,
->>>>>>> refs/remotes/origin/main
 				08EC9CE12AFC1B6200A705B8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -389,25 +374,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		08A52B362B02C142009062B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		08A52B372B02C142009062B8 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 08A52B362B02C142009062B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 08EC9CD32AFC1B6200A705B8 /* Project object */;
 }
