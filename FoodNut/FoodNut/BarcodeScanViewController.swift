@@ -19,9 +19,25 @@ struct ProductResponse: Decodable {
 
 struct Product: Decodable {
     var productName: String
+    var nutriments: NutritionFacts?
     
     private enum CodingKeys: String, CodingKey {
         case productName = "product_name"
+        case nutriments = "nutriments"
+    }
+}
+
+struct NutritionFacts: Decodable {
+    var carbsPerServing: Double?
+    var fatPerServing: Double?
+    var proteinsPerServing: Double?
+    var caloriesPerServing: Double?
+    
+    private enum CodingKeys: String, CodingKey {
+        case carbsPerServing = "carbohydrates_serving"
+        case fatPerServing = "fat_serving"
+        case proteinsPerServing = "proteins_serving"
+        case caloriesPerServing = "energy-kcal_serving"
     }
 }
 class BarcodeScanView: UIViewController {
@@ -128,7 +144,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
     }
     
     func search(code: String) {
-        let urlString = "https://world.openfoodfacts.org/api/v2/product/\(code)"
+        let urlString = "https://world.openfoodfacts.net/api/v2/product/\(code)?fields=product_name,nutriscore_data,nutriments,nutrition_grades"
         print("Searching open food facts for \(urlString)")
         
         guard let url = URL(string: urlString) else {
@@ -147,9 +163,13 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
             guard let httpResponse = response as? HTTPURLResponse,
                   (200...299).contains(httpResponse.statusCode),
                   let data = data else {
-                print("Server error or no data")
+                print("No Data. Try Scanning its Nutrition Facts. You could also have an unstable network.")
                 return
             }
+            
+            if let jsonString = String(data: data, encoding: .utf8) {
+                   print("Raw JSON response: \(jsonString)")
+               }
             
             // Decode the JSON data
             do {
@@ -159,7 +179,12 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                     print("Unable to find this item in database, try scanning its Nutrition Facts!")
                 }
                 else {
-                    print("Also wondering what the name is:  \(String(describing: productResponse.product.productName))")
+                    print("Also wondering what the name is: \(productResponse.product.productName )")
+                    print("More information: calorie content: \(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "This data is not available")")
+                    print("More information: fat content: \(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "This data is not available")")
+                    print("More information: protein content: \(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "This data is not available")")
+                    print("More information: carb content: \(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "This data is not available")")
+
                 }
             }
                 catch {
