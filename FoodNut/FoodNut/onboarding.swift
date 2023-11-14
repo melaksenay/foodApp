@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 class onboarding: UIViewController{
-    @IBOutlet weak var getStarted: UIButton!
     @IBOutlet weak var login: UIButton!
     
     @IBOutlet weak var nameInput: UITextField!
@@ -16,9 +15,13 @@ class onboarding: UIViewController{
     @IBOutlet weak var passwordInput: UITextField!
     
     override func viewDidLoad() {
-        getStarted.layer.cornerRadius = 15
-    }
-    @IBAction func getStartedPressed(_ sender: Any) {
         
     }
+    
+    @IBAction func createAccountClicked(_ sender: Any) {
+        performSegue(withIdentifier: "toMain", sender: self)
+        
+    }
+    
+
 }
