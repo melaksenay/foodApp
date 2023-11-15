@@ -19,8 +19,18 @@ class onboarding: UIViewController{
     }
     
     @IBAction func createAccountClicked(_ sender: Any) {
-        performSegue(withIdentifier: "toMain", sender: self)
-        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let tabBarController = storyboard.instantiateViewController(withIdentifier: "tabID") as! UITabBarController
+
+            // Set the new root view controller of the window.
+            window.rootViewController = tabBarController
+
+            // A smooth transition animation to the new root view controller.
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {}, completion: nil)
+        }
+
     }
     
 

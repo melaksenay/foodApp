@@ -44,8 +44,13 @@ class BarcodeScanView: UIViewController {
     
     var avCaptureSession: AVCaptureSession!
     var avPreviewLayer: AVCaptureVideoPreviewLayer!
+    var barcode:String = ""
+    var carbs:String = ""
+    var fat:String = ""
+    var proteins:String = ""
+    var cals:String = ""
     
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         avCaptureSession = AVCaptureSession()
@@ -143,64 +148,64 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
         dismiss(animated: true)
     }
     
-    func search(code: String) {
+    func found(code: String) {
+        print(code)
+        fetchData(for: code) { [weak self] productResponse in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                print("Fetched product response: \(productResponse)")
+                let detailedVC = DetailedViewController()
+                detailedVC.code = productResponse.code
+                detailedVC.productName = productResponse.product.productName
+                detailedVC.caloriesPerServing = "Calorie content: \(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")"
+                detailedVC.fatPerServing = "Fat content: \(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")"
+                detailedVC.proteinsPerServing = "Protein content: \(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")"
+                detailedVC.carbsPerServing = "Carb content: \(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")"
+                self.navigationController?.pushViewController(detailedVC, animated: true)
+            }
+        }
+        
+    }
+    
+    private func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void) {
         let urlString = "https://world.openfoodfacts.net/api/v2/product/\(code)?fields=product_name,nutriscore_data,nutriments,nutrition_grades"
         print("Searching open food facts for \(urlString)")
         
         guard let url = URL(string: urlString) else {
-            print("Url does not work.")
+            print("URL construction failed.")
             return
         }
         
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             // Check for errors
             if let error = error {
-                print("Error: \(error.localizedDescription)")
+                print("Error during URLSession data task: \(error.localizedDescription)")
                 return
             }
             
-            //Check for valid server response
+            // Check for valid server response
             guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode),
-                  let data = data else {
-                print("No Data. Try Scanning its Nutrition Facts. You could also have an unstable network.")
+                  (200...299).contains(httpResponse.statusCode) else {
+                print("Server returned an error response")
                 return
             }
             
-            if let jsonString = String(data: data, encoding: .utf8) {
-                   print("Raw JSON response: \(jsonString)")
-               }
+            // Check for data
+            guard let data = data else {
+                print("No data returned from server")
+                return
+            }
             
             // Decode the JSON data
             do {
                 let productResponse = try JSONDecoder().decode(ProductResponse.self, from: data)
-                print("Made an API Call and the code is: \(productResponse.code)")
-                if productResponse.status == 0 {
-                    print("Unable to find this item in database, try scanning its Nutrition Facts!")
-                }
-                else {
-                    print("Also wondering what the name is: \(productResponse.product.productName )")
-                    print("More information: calorie content: \(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "This data is not available")")
-                    print("More information: fat content: \(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "This data is not available")")
-                    print("More information: protein content: \(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "This data is not available")")
-                    print("More information: carb content: \(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "This data is not available")")
-
-                }
-            }
-                catch {
-                    print("Decoding JSON Error: \(error)")
+                completion(productResponse)
+                print(productResponse.product.nutriments?.caloriesPerServing ?? "no cals")
+            } catch {
+                print("Decoding JSON Error: \(error)")
             }
         }
-        
-
         task.resume()
     }
     
-    func found(code: String) {
-        print(code)
-        search(code: code)
-        let detailedVC = DetailedViewController()
-        detailedVC.code = code
-        navigationController?.pushViewController(detailedVC, animated: true)
-    }
 }
