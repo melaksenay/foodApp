@@ -166,13 +166,13 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 let imageURLString = self.fetchImageURLString(for: code)
                 if let imageURL = URL(string: imageURLString) {
                     self.downloadImage(from: imageURL) { image in
-                    detailedVC.image = image
+                    detailedVC.productImage = image
                     print("end downloading")
                     print(image!)
+                        
+                    self.navigationController?.pushViewController(detailedVC, animated: true)
                     }
                 }
-                
-                self.navigationController?.pushViewController(detailedVC, animated: true)
             }
         }
         

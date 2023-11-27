@@ -14,7 +14,7 @@ class DetailedViewController: UIViewController {
     var fatPerServing: String?
     var proteinsPerServing: String?
     var caloriesPerServing: String?
-    var image: UIImage?
+    var productImage: UIImage?
     
     
     override func viewDidLoad() {
@@ -22,7 +22,7 @@ class DetailedViewController: UIViewController {
         
         view.backgroundColor = UIColor.black
         
-        print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil"), Image = \(String(describing: image))")
+        print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil"), Image - \(String(describing: productImage))")
         setupUI()
     }
     
@@ -43,6 +43,12 @@ class DetailedViewController: UIViewController {
             stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8)
         ])
         
+        // Create and add UIImageView to the stackView
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = productImage
+        imageView.sizeToFit()
+        
         // Create and add labels to the stackView
         let nameLabel = createLabel(withText: "\(productName ?? "Not available")")
         let carbsLabel = createLabel(withText: "\(carbsPerServing ?? "Not available")")
@@ -50,7 +56,7 @@ class DetailedViewController: UIViewController {
         let proteinLabel = createLabel(withText: "\(proteinsPerServing ?? "Not available")")
         let caloriesLabel = createLabel(withText: "\(caloriesPerServing ?? "Not available")")
         
-        [nameLabel, carbsLabel, fatLabel, proteinLabel, caloriesLabel].forEach { stackView.addArrangedSubview($0) }
+        [imageView, nameLabel, carbsLabel, fatLabel, proteinLabel, caloriesLabel].forEach { stackView.addArrangedSubview($0) }
     }
     
     private func createLabel(withText text: String) -> UILabel {
