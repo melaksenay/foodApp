@@ -150,6 +150,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
     
     func found(code: String) {
         print(code)
+    
         fetchData(for: code) { [weak self] productResponse in
             DispatchQueue.main.async {
                 guard let self = self else { return }
@@ -161,6 +162,16 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 detailedVC.fatPerServing = "Fat content: \(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")"
                 detailedVC.proteinsPerServing = "Protein content: \(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")"
                 detailedVC.carbsPerServing = "Carb content: \(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")"
+                
+                let imageURLString = self.fetchImageURLString(for: code)
+                if let imageURL = URL(string: imageURLString) {
+                    self.downloadImage(from: imageURL) { image in
+                    detailedVC.image = image
+                    print("end downloading")
+                    print(image!)
+                    }
+                }
+                
                 self.navigationController?.pushViewController(detailedVC, animated: true)
             }
         }
@@ -203,6 +214,54 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 print(productResponse.product.nutriments?.caloriesPerServing ?? "no cals")
             } catch {
                 print("Decoding JSON Error: \(error)")
+            }
+        }
+        task.resume()
+    }
+    
+    func fetchImageURLString(for code: String) -> String {
+        let baseURL = "https://images.openfoodfacts.org/images/products"
+        let inputString = code
+        var finalURL = ""
+        
+        if (code.count > 8) {
+            let regexPattern = "^(...)(...)(...)(.*)$"
+            
+            do {
+                let regex = try NSRegularExpression(pattern: regexPattern, options: [])
+                let range = NSRange(inputString.startIndex..<inputString.endIndex, in: inputString)
+                
+                if let match = regex.firstMatch(in: inputString, options: [], range: range) {
+                    let group1 = (inputString as NSString).substring(with: match.range(at: 1))
+                    let group2 = (inputString as NSString).substring(with: match.range(at: 2))
+                    let group3 = (inputString as NSString).substring(with: match.range(at: 3))
+                    let group4 = (inputString as NSString).substring(with: match.range(at: 4))
+                    
+                    finalURL = "\(baseURL)/\(group1)/\(group2)/\(group3)/\(group4)/1.400.jpg"
+                }
+            } catch {
+                print("Error creating regular expression: \(error)")
+            }
+        } else {
+            finalURL = baseURL + "/" + inputString + "1.400.jpg"
+        }
+        
+        print("Product Image URL - \(finalURL)")
+        return finalURL
+        
+    }
+    
+    func downloadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let data = data, let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    completion(image)
+                }
+            } else {
+                print("Error downloading image: \(error?.localizedDescription ?? "Unknown error")")
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
             }
         }
         task.resume()

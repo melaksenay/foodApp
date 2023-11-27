@@ -14,6 +14,7 @@ class DetailedViewController: UIViewController {
     var fatPerServing: String?
     var proteinsPerServing: String?
     var caloriesPerServing: String?
+    var image: UIImage?
     
     
     override func viewDidLoad() {
@@ -21,7 +22,7 @@ class DetailedViewController: UIViewController {
         
         view.backgroundColor = UIColor.black
         
-        print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil")")
+        print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil"), Image = \(String(describing: image))")
         setupUI()
     }
     
