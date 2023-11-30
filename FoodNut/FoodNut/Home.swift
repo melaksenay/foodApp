@@ -5,21 +5,32 @@ class Home: UIViewController {
 
     var handle: AuthStateDidChangeListenerHandle?
 
+    @IBOutlet weak var welcomeLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Other setup...
+        
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Set up the authentication state listener
-        handle = Auth.auth().addStateDidChangeListener { auth, user in
-            // Handle authentication state
+        handle = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+            if let userEmail = user?.email {
+                // User is signed in, update the welcome label
+                self?.welcomeLabel.text = "Welcome, \(userEmail)"
+            } else {
+                // No user is signed in
+                self?.welcomeLabel.text = "Welcome, Guest"
+            }
         }
         
         print("viewWillAppear called")
     }
+
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -29,4 +40,7 @@ class Home: UIViewController {
             Auth.auth().removeStateDidChangeListener(handle)
         }
     }
+    
+    
+    
 }
