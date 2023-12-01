@@ -11,14 +11,17 @@ import FirebaseAuth
 class Profile: UIViewController {
     
     @IBOutlet weak var logoutButton: UIButton!
+    @IBOutlet weak var profilePicture: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
     var handle: AuthStateDidChangeListenerHandle?
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        profilePicture.layer.cornerRadius = profilePicture.frame.size.width / 2
+        profilePicture.clipsToBounds = true
     }
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
