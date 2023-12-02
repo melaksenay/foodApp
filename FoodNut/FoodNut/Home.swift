@@ -14,26 +14,40 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     
     @IBOutlet weak var welcomeLabel: UILabel!
     
+    var recentProducts: [productStorage] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         db = Firestore.firestore()  // Initialize Firestore
         
         setupPieChartData()
-        fetchRecentProductIDs()
+        loadRecentProducts()
     }
     
+    // Function to load recent products from UserDefaults
+        private func loadRecentProducts() {
+            let defaults = UserDefaults.standard
+            if let savedProducts = defaults.object(forKey: "savedProducts") as? Data {
+                if let decodedProducts = try? JSONDecoder().decode([productStorage].self, from: savedProducts) {
+                    recentProducts = decodedProducts
+                }
+            }
+            recentsCollectionView.reloadData()
+        }
+
     
     
     
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scanCell", for: indexPath) as!
-        RecentsCollectionViewCell
         
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scanCell", for: indexPath) as! RecentsCollectionViewCell
+            
+        let product = recentProducts[indexPath.item]
         
-        
-        
+        cell.foodNameLabel.text = product.name
+
         return cell
     }
     
@@ -43,7 +57,7 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     
     //items per section in collection
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return recentProducts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -63,19 +77,7 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     
     
     
-    private func fetchRecentProductIDs() {
-            guard let userID = Auth.auth().currentUser?.uid else { return }
 
-            db.collection("users").document(userID).getDocument { [weak self] (document, error) in
-                if let document = document, document.exists, let data = document.data(),
-                   let recentScans = data["recentScans"] as? [String] {
-                    self?.recentProductIDs = recentScans
-                    self?.recentsCollectionView.reloadData()
-                } else {
-                    print("Error fetching recent scans: \(error?.localizedDescription ?? "Unknown error")")
-                }
-            }
-        }
     
     
     

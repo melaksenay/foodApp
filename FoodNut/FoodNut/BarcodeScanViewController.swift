@@ -175,7 +175,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 guard let self = self else { return }
                 print("Fetched product response: \(productResponse)")
                 
-                productStorage(
+                let newProduct = productStorage(
                     
                 name: productResponse.product.productName, id: productResponse.code,
                 
@@ -194,6 +194,9 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 hierarchy: productResponse.product.catHierarchy
                 
                 )
+                
+                self.saveProductToUserDefaults(newProduct)
+                
                 
                 print("THIS IS THE CATEGORY HIERARCHY!!!! \(productResponse.product.catHierarchy)")
                 
@@ -219,6 +222,36 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
             }
         }
         
+    }
+    
+    // Function to save a product to UserDefaults
+    func saveProductToUserDefaults(_ product: productStorage) {
+        let defaults = UserDefaults.standard
+        var products = fetchProductsFromUserDefaults()
+
+        // Adding the new product at the beginning of the list
+        products.insert(product, at: 0)
+
+        // Ensuring the list doesn't exceed 3 items
+        if products.count > 3 {
+            products.removeLast()
+        }
+
+        // Saving the updated list to UserDefaults
+        if let encoded = try? JSONEncoder().encode(products) {
+            defaults.set(encoded, forKey: "savedProducts")
+        }
+    }
+
+    // Function to fetch products from UserDefaults
+    func fetchProductsFromUserDefaults() -> [productStorage] {
+        let defaults = UserDefaults.standard
+        if let savedProducts = defaults.object(forKey: "savedProducts") as? Data {
+            if let decodedProducts = try? JSONDecoder().decode([productStorage].self, from: savedProducts) {
+                return decodedProducts
+            }
+        }
+        return []
     }
     
     private func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void) {
