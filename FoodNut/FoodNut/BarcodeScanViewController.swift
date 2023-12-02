@@ -20,11 +20,16 @@ struct ProductResponse: Decodable {
 struct Product: Decodable {
     var productName: String
     var nutriments: NutritionFacts?
-    
+    var imageURL : String
+    var nutriscore: String
+    var catHierarchy: [String]
     
     private enum CodingKeys: String, CodingKey {
         case productName = "product_name"
         case nutriments = "nutriments"
+        case imageURL = "image_url"
+        case nutriscore = "nutriscore_grade"
+        case catHierarchy = "categories_hierarchy"
     }
 }
 
@@ -47,10 +52,11 @@ struct productStorage: Codable, Hashable {
     var id: String
     var imageURL: String
     var score: String
-    var caloires: Int
-    var fat: Int
-    var carbs: Int
-    var protein: Int
+    var calories: String
+    var fat: String
+    var carbs: String
+    var protein: String
+    var hierarchy: [String]
 }
 
 class BarcodeScanView: UIViewController {
@@ -168,7 +174,31 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 print("Fetched product response: \(productResponse)")
+                
+                productStorage(
+                    
+                name: productResponse.product.productName, id: productResponse.code,
+                
+                imageURL: productResponse.product.imageURL,
+                
+                score: productResponse.product.nutriscore,
+                
+                calories: "\(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")",
+                
+                fat: "\(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")",
+                
+                carbs: "\(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")",
+                
+                protein: "\(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")" ,
+                
+                hierarchy: productResponse.product.catHierarchy
+                
+                )
+                
+                print("THIS IS THE CATEGORY HIERARCHY!!!! \(productResponse.product.catHierarchy)")
+                
                 let detailedVC = DetailedViewController()
+                detailedVC.nutriscore = productResponse.product.nutriscore
                 detailedVC.code = productResponse.code
                 detailedVC.productName = productResponse.product.productName
                 detailedVC.caloriesPerServing = "Calorie content: \(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")"
@@ -192,7 +222,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
     }
     
     private func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void) {
-        let urlString = "https://world.openfoodfacts.net/api/v2/product/\(code)?fields=product_name,nutriscore_data,nutriments,nutrition_grades"
+        let urlString = "https://world.openfoodfacts.org/api/v2/product/\(code)"
         print("Searching open food facts for \(urlString)")
         
         guard let url = URL(string: urlString) else {
