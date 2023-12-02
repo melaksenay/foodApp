@@ -15,6 +15,7 @@
 		08111A632B197373009BCBD0 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = 08111A622B197373009BCBD0 /* DGCharts */; };
 		08111A692B1BBD03009BCBD0 /* RecentsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08111A682B1BBD03009BCBD0 /* RecentsCollectionViewCell.swift */; };
 		08111A6D2B1BCF0E009BCBD0 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08111A6C2B1BCF0E009BCBD0 /* Search.swift */; };
+		08111A6F2B1BD092009BCBD0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08111A6E2B1BD092009BCBD0 /* GoogleService-Info.plist */; };
 		0893CCFD2B0339DC00897317 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0893CCFC2B0339DC00897317 /* Welcome.swift */; };
 		08EC9CDF2AFC1B6200A705B8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EC9CDE2AFC1B6200A705B8 /* AppDelegate.swift */; };
 		08EC9CE12AFC1B6200A705B8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EC9CE02AFC1B6200A705B8 /* SceneDelegate.swift */; };
@@ -45,6 +46,7 @@
 		08111A5C2B190711009BCBD0 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		08111A682B1BBD03009BCBD0 /* RecentsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsCollectionViewCell.swift; sourceTree = "<group>"; };
 		08111A6C2B1BCF0E009BCBD0 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
+		08111A6E2B1BD092009BCBD0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0893CCFC2B0339DC00897317 /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		08EC9CDB2AFC1B6200A705B8 /* FoodNut.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoodNut.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08EC9CDE2AFC1B6200A705B8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 				08EC9CE92AFC1B6300A705B8 /* LaunchScreen.storyboard */,
 				4D10E81A2B02C34E00D76A32 /* onboarding.swift */,
 				08EC9CEC2AFC1B6300A705B8 /* Info.plist */,
+				08111A6E2B1BD092009BCBD0 /* GoogleService-Info.plist */,
 			);
 			path = FoodNut;
 			sourceTree = "<group>";
@@ -190,6 +193,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				08EC9CEB2AFC1B6300A705B8 /* LaunchScreen.storyboard in Resources */,
+				08111A6F2B1BD092009BCBD0 /* GoogleService-Info.plist in Resources */,
 				08EC9CE82AFC1B6300A705B8 /* Assets.xcassets in Resources */,
 				08EC9CE62AFC1B6200A705B8 /* Main.storyboard in Resources */,
 			);

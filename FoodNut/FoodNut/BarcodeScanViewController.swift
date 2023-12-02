@@ -41,6 +41,18 @@ struct NutritionFacts: Decodable {
         case caloriesPerServing = "energy-kcal_serving"
     }
 }
+
+struct productStorage: Codable, Hashable {
+    var name: String
+    var id: String
+    var imageURL: String
+    var score: String
+    var caloires: Int
+    var fat: Int
+    var carbs: Int
+    var protein: Int
+}
+
 class BarcodeScanView: UIViewController {
     
     var avCaptureSession: AVCaptureSession!
