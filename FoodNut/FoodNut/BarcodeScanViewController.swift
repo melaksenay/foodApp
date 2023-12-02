@@ -21,6 +21,7 @@ struct Product: Decodable {
     var productName: String
     var nutriments: NutritionFacts?
     
+    
     private enum CodingKeys: String, CodingKey {
         case productName = "product_name"
         case nutriments = "nutriments"

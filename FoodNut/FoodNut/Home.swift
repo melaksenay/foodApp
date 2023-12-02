@@ -3,12 +3,15 @@ import DGCharts
 import FirebaseAuth
 import FirebaseFirestore  // Import Firestore
 
-class Home: UIViewController {
-
+class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+    
     @IBOutlet weak var pieChartView: PieChartView!
     var handle: AuthStateDidChangeListenerHandle?
     var db: Firestore!  // Firestore database reference
+    var recentProductIDs: [String] = []
 
+    @IBOutlet weak var recentsCollectionView: UICollectionView!
+    
     @IBOutlet weak var welcomeLabel: UILabel!
     
     override func viewDidLoad() {
@@ -16,7 +19,65 @@ class Home: UIViewController {
         db = Firestore.firestore()  // Initialize Firestore
         
         setupPieChartData()
+        fetchRecentProductIDs()
     }
+    
+    
+    
+    
+    
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scanCell", for: indexPath) as!
+        RecentsCollectionViewCell
+        
+        
+        
+        
+        return cell
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    //items per section in collection
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.frame.size.width / 2.5
+        let height = width * 1.75
+        return CGSize(width: width, height: height)
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private func fetchRecentProductIDs() {
+            guard let userID = Auth.auth().currentUser?.uid else { return }
+
+            db.collection("users").document(userID).getDocument { [weak self] (document, error) in
+                if let document = document, document.exists, let data = document.data(),
+                   let recentScans = data["recentScans"] as? [String] {
+                    self?.recentProductIDs = recentScans
+                    self?.recentsCollectionView.reloadData()
+                } else {
+                    print("Error fetching recent scans: \(error?.localizedDescription ?? "Unknown error")")
+                }
+            }
+        }
+    
+    
     
     func setupPieChartData() {
         // Sample data
