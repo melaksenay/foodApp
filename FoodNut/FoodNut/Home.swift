@@ -3,7 +3,7 @@ import DGCharts
 import FirebaseAuth
 import FirebaseFirestore  // Import Firestore
 
-class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout{
     
     @IBOutlet weak var pieChartView: PieChartView!
     var handle: AuthStateDidChangeListenerHandle?
@@ -21,6 +21,10 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         db = Firestore.firestore()  // Initialize Firestore
+        
+        recentsCollectionView.delegate = self
+        recentsCollectionView.dataSource = self
+        
         
         setupPieChartData()
     }
@@ -48,16 +52,23 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
         let product = recentProducts[indexPath.item]
         
         cell.foodNameLabel.text = product.name
+        
+        cell.backgroundColor = .red
+        
+        print("cell for item at")
 
         // Fetch and set the image
         fetchImage(from: product.imageURL) { image in
             DispatchQueue.main.async {
-                cell.foodImageView.image = image ?? UIImage(named: "defaultImage") // Replace "defaultImage" with your placeholder image
+                cell.foodImageView.image = image ?? UIImage(named: "todd") // Replace "defaultImage" with your placeholder image
             }
         }
 
         return cell
     }
+    
+    
+    
 
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -69,11 +80,6 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
         return recentProducts.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.size.width / 2.5
-        let height = width * 1.75
-        return CGSize(width: width, height: height)
-    }
     
     func fetchImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
         guard let url = URL(string: urlString) else {
@@ -97,7 +103,11 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     
     
     
-    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+            let width = collectionView.frame.size.width / 2.5
+            let height = width * 1.75
+            return CGSize(width: width, height: height)
+        }
     
     
     
@@ -185,6 +195,8 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
                 self?.welcomeLabel.text = "Welcome, Guest"
             }
         }
+        
+        recentsCollectionView.reloadData()
         
         print("viewWillAppear called")
     }
