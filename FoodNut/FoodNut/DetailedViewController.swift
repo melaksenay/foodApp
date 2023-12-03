@@ -22,15 +22,37 @@ class DetailedViewController: UIViewController {
     
     var productImage: UIImage?
     
+    let addToFavoritesButton = UIButton(type: .system)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = UIColor.white
         
 //        print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil"), Image - \(String(describing: productImage))")
         setupUI()
+        setupAddToFavoritesButton()
     }
+    
+    private func setupAddToFavoritesButton() {
+           addToFavoritesButton.setTitle("Add to Favorites", for: .normal)  // Set button title
+           addToFavoritesButton.addTarget(self, action: #selector(addToFavoritesTapped), for: .touchUpInside)  // Button add
+           
+           view.addSubview(addToFavoritesButton)  // Add the button to the view hierarchy
+           
+           addToFavoritesButton.translatesAutoresizingMaskIntoConstraints = false  // Disable autoresizing mask translation
+           
+           // Set up constraints to position the button at the bottom right corner
+           NSLayoutConstraint.activate([
+               addToFavoritesButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+               addToFavoritesButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
+           ])
+       }
+    
+    @objc func addToFavoritesTapped() {
+            // tap event.
+            print("Add to Favorites tapped!")
+            // logic to add the item to favorites is needed
+        }
     
     private func setupUI() {
         let stackView = UIStackView()
