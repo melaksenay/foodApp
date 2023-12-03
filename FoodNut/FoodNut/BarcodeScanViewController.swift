@@ -175,33 +175,38 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 guard let self = self else { return }
                 print("Fetched product response: \(productResponse)")
                 
-                let newProduct = productStorage(
+                if(productResponse.status == 1){
+                    let newProduct = productStorage(
+                        
+                        name: productResponse.product.productName, id: productResponse.code,
+                        
+                        imageURL: productResponse.product.imageURL,
+                        
+                        score: productResponse.product.nutriscore,
+                        
+                        calories: "\(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")",
+                        
+                        fat: "\(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")",
+                        
+                        carbs: "\(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")",
+                        
+                        protein: "\(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")" ,
+                        
+                        hierarchy: productResponse.product.catHierarchy
+                        
+                    )
                     
-                name: productResponse.product.productName, id: productResponse.code,
-                
-                imageURL: productResponse.product.imageURL,
-                
-                score: productResponse.product.nutriscore,
-                
-                calories: "\(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")",
-                
-                fat: "\(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")",
-                
-                carbs: "\(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")",
-                
-                protein: "\(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")" ,
-                
-                hierarchy: productResponse.product.catHierarchy
-                
-                )
-                
-                self.saveProductToUserDefaults(newProduct)
+                    self.saveProductToUserDefaults(newProduct)
+                }
+                else{
+                    print("Could not be found")
+                }
                 
                 
                 print("THIS IS THE CATEGORY HIERARCHY!!!! \(productResponse.product.catHierarchy)")
                 
                 let detailedVC = DetailedViewController()
-                detailedVC.nutriscore = productResponse.product.nutriscore
+                detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore.uppercased())"
                 detailedVC.code = productResponse.code
                 detailedVC.productName = productResponse.product.productName
                 detailedVC.caloriesPerServing = "Calorie content: \(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")"
