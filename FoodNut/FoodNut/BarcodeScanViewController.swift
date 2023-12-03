@@ -23,6 +23,8 @@ struct Product: Decodable {
     var imageURL : String
     var nutriscore: String
     var catHierarchy: [String]
+    var novaGroup: Double?
+    var ingredients: String?
     
     private enum CodingKeys: String, CodingKey {
         case productName = "product_name"
@@ -30,6 +32,8 @@ struct Product: Decodable {
         case imageURL = "image_url"
         case nutriscore = "nutriscore_grade"
         case catHierarchy = "categories_hierarchy"
+        case novaGroup = "nova_group"
+        case ingredients = "ingredients_text_en"
     }
 }
 
@@ -210,13 +214,23 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 print("THIS IS THE CATEGORY HIERARCHY!!!! \(productResponse.product.catHierarchy)")
                 
                 let detailedVC = DetailedViewController()
-                detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore.uppercased())"
+                detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore.uppercased())" // fix this.
                 detailedVC.code = productResponse.code
                 detailedVC.productName = productResponse.product.productName
                 detailedVC.caloriesPerServing = "Calorie content: \(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")"
                 detailedVC.fatPerServing = "Fat content: \(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")"
                 detailedVC.proteinsPerServing = "Protein content: \(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")"
                 detailedVC.carbsPerServing = "Carb content: \(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")"
+                if let novaGroup = productResponse.product.novaGroup {
+                    detailedVC.novaGroup = "Nova Group: \(novaGroup)"
+                } else {
+                    detailedVC.novaGroup = "No Data"
+                }
+                if let ingredients = productResponse.product.ingredients{
+                    detailedVC.ingredients = "Ingredients to watch: \(ingredients)"
+                } else{
+                    detailedVC.ingredients = "No Data"
+                }
                 
                 let imageURLString = self.fetchImageURLString(for: code)
                 if let imageURL = URL(string: imageURLString) {

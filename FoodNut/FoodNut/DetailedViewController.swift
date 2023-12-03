@@ -15,6 +15,9 @@ class DetailedViewController: UIViewController {
     var proteinsPerServing: String?
     var caloriesPerServing: String?
     var nutriscore: String?
+    var novaGroup: String?
+    var ingredients: String?
+    
     var productImage: UIImage?
     
     
@@ -57,8 +60,10 @@ class DetailedViewController: UIViewController {
         let proteinLabel = createLabel(withText: "\(proteinsPerServing ?? "Not available")")
         let caloriesLabel = createLabel(withText: "\(caloriesPerServing ?? "Not available")")
         let nutriscoreLabel = createLabel(withText: "\(nutriscore ?? "Not available")")
+        let novaLabel = createLabel(withText: "\(novaGroup ?? "Not available")")
+        let ingredientsLable = createLabel(withText: "\(ingredients ?? "Not available")")
         
-        [imageView, nameLabel, carbsLabel, fatLabel, proteinLabel, caloriesLabel, nutriscoreLabel].forEach { stackView.addArrangedSubview($0) }
+        [imageView, nameLabel, carbsLabel, fatLabel, proteinLabel, caloriesLabel, nutriscoreLabel, novaLabel, ingredientsLable].forEach { stackView.addArrangedSubview($0) }
     }
     
     private func createLabel(withText text: String) -> UILabel {
