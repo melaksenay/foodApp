@@ -25,6 +25,11 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
         recentsCollectionView.delegate = self
         recentsCollectionView.dataSource = self
         
+        if let layout = recentsCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.scrollDirection = .horizontal
+            }
+        
+        
         
         setupPieChartData()
     }
@@ -52,15 +57,12 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
         let product = recentProducts[indexPath.item]
         
         cell.foodNameLabel.text = product.name
-        
-        cell.backgroundColor = .red
-        
-        print("cell for item at")
+
 
         // Fetch and set the image
         fetchImage(from: product.imageURL) { image in
             DispatchQueue.main.async {
-                cell.foodImageView.image = image ?? UIImage(named: "todd") // Replace "defaultImage" with your placeholder image
+                cell.foodImageView.image = image ?? UIImage(named: "todd") 
             }
         }
 
