@@ -33,6 +33,8 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
                 }
             }
             recentsCollectionView.reloadData()
+            
+            print(recentProducts)
         }
 
     
