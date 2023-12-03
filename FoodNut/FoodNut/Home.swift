@@ -16,6 +16,7 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     
     var recentProducts: [productStorage] = []
     var categoryScanCounts: [String: Int] = [:]
+    var categoryColors: [String: UIColor] = [:]  //store colors for each category
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,28 +83,63 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     
     
     
-    func setupPieChartData() {
-        // Sample data
-        let dataEntries = [
-            PieChartDataEntry(value: 40, label: "Beverages"),
-            PieChartDataEntry(value: 30, label: "Snacks"),
-            PieChartDataEntry(value: 30, label: "Desserts")
-        ]
+    func makeCategoryColors() {
+                // Regenerate your category colors here
+                categoryColors.removeAll() // Clear existing colors
 
-        let dataSet = PieChartDataSet(entries: dataEntries, label: "")
+                for (category, _) in categoryScanCounts {
+                    let newColor = getRandomColor()
+                    categoryColors[category] = newColor
+                }
 
-        // Customization with calmer colors
-        dataSet.colors = [
-            UIColor.systemGreen.withAlphaComponent(0.5), // Light green
-            UIColor.systemOrange.withAlphaComponent(0.5), // Light orange
-            UIColor.systemPink.withAlphaComponent(0.5)    // Light pink
-        ]
-        dataSet.valueTextColor = UIColor.black
-        dataSet.valueFont = UIFont.systemFont(ofSize: 16)
+                // Update the pie chart with the new data
+                updatePieChart()
+            }
         
-        // Assign the dataset to the chart
-        pieChartView.data = PieChartData(dataSet: dataSet)
-    }
+        func setupPieChartData() {
+            // Use the categoryScanCounts dictionary to create initial pie chart data
+        //map sets dictionary to be array for the pieChart
+            let dataEntries = categoryScanCounts.map { PieChartDataEntry(value: Double($0.value), label: $0.key) }
+
+            let dataSet = PieChartDataSet(entries: dataEntries, label: "")
+
+            // Automatic colors for each category
+            dataSet.colors = dataEntries.map { entry in
+                getColor(forCategory: entry.label ?? "")
+            }
+
+            dataSet.valueTextColor = UIColor.black
+            dataSet.valueFont = UIFont.systemFont(ofSize: 16)
+
+            // Assign the dataset to the chart
+            pieChartView.data = PieChartData(dataSet: dataSet)
+        }
+
+        // Function to update the pie chart dynamically when a new category is added
+        func updatePieChart() {
+            setupPieChartData()  // Update the pie chart with the new data
+        }
+
+        // Function to get color for a category, creating a new color if needed
+        func getColor(forCategory category: String) -> UIColor {
+            if let existingColor = categoryColors[category] {
+                return existingColor
+            } else {
+                let newColor = getRandomColor()
+                categoryColors[category] = newColor
+                return newColor
+            }
+        }
+
+        // Function to generate a random color
+        func getRandomColor() -> UIColor {
+            return UIColor(
+                red: CGFloat(drand48()),
+                green: CGFloat(drand48()),
+                blue: CGFloat(drand48()),
+                alpha: 1.0
+            )
+        }
 
     
     override func viewWillAppear(_ animated: Bool) {
