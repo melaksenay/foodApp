@@ -74,7 +74,7 @@ class onboarding: UIViewController {
                         self?.db.collection("users").document(userID).setData([
                             "name": name,
                             "photo": "url_of_the_photo",
-                            "userFavorites": [String](), // Empty string array
+                            "userFavorites": [], // Empty string array
                             "recentScans": [String](), // Empty string array
                             "totalItemsScanned": 0
                         ]) { err in

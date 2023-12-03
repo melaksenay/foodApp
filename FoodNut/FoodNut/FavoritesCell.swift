@@ -12,4 +12,5 @@ class FavoritesCell: UICollectionViewCell {
     @IBOutlet weak var favoriteLabel: UILabel!
     
     @IBOutlet weak var favoriteImageView: UIImageView!
+    
 }
