@@ -15,11 +15,16 @@ class Profile: UIViewController {
     @IBOutlet weak var nameLabel: UILabel!
     var handle: AuthStateDidChangeListenerHandle?
     
-
+    @IBOutlet weak var updateProfile: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         profilePicture.layer.cornerRadius = profilePicture.frame.size.width / 2
         profilePicture.clipsToBounds = true
+        nameLabel.layer.cornerRadius = nameLabel.frame.size.width / 18
+        nameLabel.clipsToBounds = true
+        updateProfile.layer.cornerRadius = updateProfile.frame.size.width / 18
+        updateProfile.clipsToBounds = true
     }
 
     
