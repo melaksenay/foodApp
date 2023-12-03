@@ -171,6 +171,7 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
         
         loadRecentProducts()
         loadCategoryScanCounts()
+        setupPieChartData()
         
         // Set up the authentication state listener
         handle = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
