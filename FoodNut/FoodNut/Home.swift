@@ -43,15 +43,22 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scanCell", for: indexPath) as! RecentsCollectionViewCell
             
         let product = recentProducts[indexPath.item]
         
         cell.foodNameLabel.text = product.name
 
+        // Fetch and set the image
+        fetchImage(from: product.imageURL) { image in
+            DispatchQueue.main.async {
+                cell.foodImageView.image = image ?? UIImage(named: "defaultImage") // Replace "defaultImage" with your placeholder image
+            }
+        }
+
         return cell
     }
+
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -67,6 +74,23 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
         let height = width * 1.75
         return CGSize(width: width, height: height)
     }
+    
+    func fetchImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                completion(nil)
+                return
+            }
+
+            completion(UIImage(data: data))
+        }.resume()
+    }
+
     
     
     
