@@ -21,7 +21,7 @@ class DetailedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.black
+        view.backgroundColor = UIColor.white
         
         print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil"), Image - \(String(describing: productImage))")
         setupUI()
@@ -64,6 +64,7 @@ class DetailedViewController: UIViewController {
     private func createLabel(withText text: String) -> UILabel {
         let label = UILabel()
         label.text = text
+        label.textColor = .black
         label.textAlignment = .center
         label.numberOfLines = 0 //label can wrap if text is longgg
         return label
