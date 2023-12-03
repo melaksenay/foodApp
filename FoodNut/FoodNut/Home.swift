@@ -21,7 +21,6 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
         db = Firestore.firestore()  // Initialize Firestore
         
         setupPieChartData()
-        loadRecentProducts()
     }
     
     // Function to load recent products from UserDefaults
@@ -33,7 +32,7 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
                 }
             }
             recentsCollectionView.reloadData()
-            
+            print("loading")
             print(recentProducts)
         }
 
@@ -109,6 +108,8 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        loadRecentProducts()
         
         // Set up the authentication state listener
         handle = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
