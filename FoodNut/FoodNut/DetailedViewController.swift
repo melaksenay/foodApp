@@ -16,7 +16,9 @@ class DetailedViewController: UIViewController {
     var caloriesPerServing: String?
     var nutriscore: String?
     var novaGroup: String?
-    var ingredients: String?
+    var ingredients: String? //might be deprecated.
+    var additives: String?
+    
     
     var productImage: UIImage?
     
@@ -26,7 +28,7 @@ class DetailedViewController: UIViewController {
         
         view.backgroundColor = UIColor.white
         
-        print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil"), Image - \(String(describing: productImage))")
+//        print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil"), Image - \(String(describing: productImage))")
         setupUI()
     }
     
@@ -61,9 +63,10 @@ class DetailedViewController: UIViewController {
         let caloriesLabel = createLabel(withText: "\(caloriesPerServing ?? "Not available")")
         let nutriscoreLabel = createLabel(withText: "\(nutriscore ?? "Not available")")
         let novaLabel = createLabel(withText: "\(novaGroup ?? "Not available")")
-        let ingredientsLable = createLabel(withText: "\(ingredients ?? "Not available")")
+        let additiveLabel = createLabel(withText: "\(additives ?? "Not available")")
+//        let ingredientsLable = createLabel(withText: "\(ingredients ?? "Not available")")
         
-        [imageView, nameLabel, carbsLabel, fatLabel, proteinLabel, caloriesLabel, nutriscoreLabel, novaLabel, ingredientsLable].forEach { stackView.addArrangedSubview($0) }
+        [imageView, nameLabel, carbsLabel, fatLabel, proteinLabel, caloriesLabel, nutriscoreLabel, novaLabel, additiveLabel].forEach { stackView.addArrangedSubview($0) }
     }
     
     private func createLabel(withText text: String) -> UILabel {

@@ -25,6 +25,7 @@ struct Product: Decodable {
     var catHierarchy: [String]
     var novaGroup: Double?
     var ingredients: String?
+    var additives: [String]?
     
     private enum CodingKeys: String, CodingKey {
         case productName = "product_name"
@@ -34,6 +35,7 @@ struct Product: Decodable {
         case catHierarchy = "categories_hierarchy"
         case novaGroup = "nova_group"
         case ingredients = "ingredients_text_en"
+        case additives = "additives_tags"
     }
 }
 
@@ -64,6 +66,66 @@ struct productStorage: Codable, Hashable {
 }
 
 class BarcodeScanView: UIViewController {
+    
+    let dangerousAdditives : [[String]] = [
+        ["E202 - Potassium sorbate", "High risk of over exposure"],
+        ["E450 - Diphosphates", "High risk of over exposure"],
+        ["E407 - Carrageenan", "High risk of over exposure"],
+        ["E250 - Sodium nitrite", "High risk of over exposure"],
+        ["E129 - Allura red", "No or very low risk of over exposure"],
+        ["E150c - Ammonia caramel", "Moderate risk of over exposure"],
+        ["E133 - Brilliant blue FCF", "Moderate risk of over exposure"],
+        ["E211 - Sodium benzoate", "High risk of over exposure"],
+        ["E341 - Calcium phosphates", "High risk of over exposure"],
+        ["E621 - Monosodium glutamate", "High risk of over exposure"],
+        ["E316 - Sodium erythorbate", "No or very low risk of over exposure"],
+        ["E200 - Sorbic acid", "High risk of over exposure"],
+        ["E452 - Polyphosphates", "High risk of over exposure"],
+        ["E481 - Sodium stearoyl-2-lactylate", "High risk of over exposure"],
+        ["E223 - Sodium metabisulphite", "High risk of over exposure"],
+        ["E435 - Polyoxyethylene sorbitan monostearate", "Moderate risk of over exposure"],
+        ["E433 - Polyoxyethylene sorbitan monooleate", "Moderate risk of over exposure"],
+        ["E150a - Plain caramel", "No or very low risk of over exposure"],
+        ["E252 - Potassium nitrate", "High risk of over exposure"],
+        ["E220 - Sulphur dioxide", "High risk of over exposure"],
+        ["E960 - Steviol glycosides", "Moderate risk of over exposure"],
+        ["E132 - Indigotine", "No or very low risk of over exposure"],
+        ["E951 - Aspartame", "No or very low risk of over exposure"],
+        ["E150d - Sulphite ammonia caramel", "No or very low risk of over exposure"],
+        ["E1520 - Propylene Glycol", "No or very low risk of over exposure"],
+        ["E170i - Calcium carbonate", "No or very low risk of over exposure"],
+        ["E491 - Sorbitan monostearate", "High risk of over exposure"],
+        ["E492 - Sorbitan tristearate", "High risk of over exposure"],
+        ["E407a - Processed eucheuma seaweed", "High risk of over exposure"],
+        ["E473 - Sucrose esters of fatty acids", "High risk of over exposure"],
+        ["E224 - Potassium metabisulphite", "High risk of over exposure"],
+        ["E212 - Potassium benzoate", "High risk of over exposure"],
+        ["E451 - Triphosphates", "High risk of over exposure"],
+        ["E340 - Potassium phosphates", "High risk of over exposure"],
+        ["E339 - Sodium phosphates", "High risk of over exposure"],
+        ["E251 - Sodium nitrate", "High risk of over exposure"],
+        ["E222 - Sodium bisulphite", "High risk of over exposure"],
+        ["E131 - Patent blue v", "Moderate risk of over exposure"],
+        ["E142 - Green s", "Moderate risk of over exposure"],
+        ["E432 - Polyoxyethylene sorbitan monolaurate", "Moderate risk of over exposure"],
+        ["E511 - Magnesium chloride", "Moderate risk of over exposure"],
+        ["E507 - Hydrochloric acid", "Moderate risk of over exposure"],
+        ["E436 - Polyoxyethylene sorbitan tristearate", "Moderate risk of over exposure"],
+        ["E155 - Brown ht", "High risk of over exposure"],
+        ["E228 - Potassium bisulphite", "High risk of over exposure"],
+        ["E213 - Calcium benzoate", "High risk of over exposure"],
+        ["E151 - Brilliant black bn", "No or very low risk of over exposure"],
+        ["E123 - Amaranth", "No or very low risk of over exposure"],
+        ["E122 - Azorubine", "No or very low risk of over exposure"],
+        ["E150b - Caustic sulphite caramel", "No or very low risk of over exposure"],
+        ["E509 - Calcium chloride", "Moderate risk of over exposure"],
+        ["E494 - Sorbitan monooleate", "High risk of over exposure"],
+        ["E493 - Sorbitan monolaurate", "High risk of over exposure"],
+         ["E434 - Polyoxyethylene sorbitan monopalmitate", "Moderate risk of over exposure"],
+        ["E213 - Calcium benzoate", "High risk of over exposure"],
+        ["E227 - Calcium bisulphite", "High risk of over exposure"],
+        ["E495 - Sorbitan monopalmitate", "High risk of over exposure"]
+    ]
     
     var avCaptureSession: AVCaptureSession!
     var avPreviewLayer: AVCaptureVideoPreviewLayer!
@@ -209,11 +271,41 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 if let firstCategory = productResponse.product.catHierarchy.first {
                     self.updateCategoryScanCount(for: firstCategory)
                                 }
-                
-                
-                print("THIS IS THE CATEGORY HIERARCHY!!!! \(productResponse.product.catHierarchy)")
-                
+              
+                //Fill out detailed View Controller
                 let detailedVC = DetailedViewController()
+    
+                
+                var additivesString = ""
+                if let calledAdditives = productResponse.product.additives{
+                    print(calledAdditives)
+                    let filteredAdditiveList = calledAdditives.map{ $0.replacingOccurrences(of: "en:", with: "").uppercased()}
+                    
+                    for additive in filteredAdditiveList{
+                        if let match = self.dangerousAdditives.first(where: {$0[0].contains(additive)}){
+                            let modifiedMatch = match[0].split(separator: "-").map(String.init).last?.trimmingCharacters(in: .whitespacesAndNewlines)
+                            if let name = modifiedMatch {
+                                additivesString.append("\(name). Risk: \(match[1])\n")
+                            }
+                        }
+                    }
+                    if additivesString.count == 0 {
+                        detailedVC.additives = "Additives: No harmful additives found"
+                    }
+                    else{
+                        detailedVC.additives = "Additives: \(additivesString)"
+                
+                    }
+                    
+                } else{
+                    detailedVC.additives = "No Data/No harmful additives found"
+                }
+                    
+                    
+               
+                            
+                
+                
                 detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore.uppercased())" // fix this.
                 detailedVC.code = productResponse.code
                 detailedVC.productName = productResponse.product.productName
@@ -304,7 +396,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
     }
     
     private func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void) {
-        let urlString = "https://world.openfoodfacts.org/api/v2/product/\(code)"
+        let urlString = "https://world.openfoodfacts.net/api/v2/product/\(code)"
         print("Searching open food facts for \(urlString)")
         
         guard let url = URL(string: urlString) else {
