@@ -202,6 +202,10 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                     print("Could not be found")
                 }
                 
+                if let firstCategory = productResponse.product.catHierarchy.first {
+                    self.updateCategoryScanCount(for: firstCategory)
+                                }
+                
                 
                 print("THIS IS THE CATEGORY HIERARCHY!!!! \(productResponse.product.catHierarchy)")
                 
@@ -228,6 +232,32 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
         }
         
     }
+    
+    // Function to update category scan count
+        func updateCategoryScanCount(for category: String) {
+            var categoryScans = fetchCategoryScansFromUserDefaults()
+            categoryScans[category, default: 0] += 1
+            saveCategoryScansToUserDefaults(categoryScans)
+        }
+
+        // Function to fetch category scans from UserDefaults
+        func fetchCategoryScansFromUserDefaults() -> [String: Int] {
+            let defaults = UserDefaults.standard
+            if let savedScans = defaults.object(forKey: "categoryScans") as? Data {
+                if let decodedScans = try? JSONDecoder().decode([String: Int].self, from: savedScans) {
+                    return decodedScans
+                }
+            }
+            return [:]
+        }
+
+        // Function to save category scans to UserDefaults
+        func saveCategoryScansToUserDefaults(_ scans: [String: Int]) {
+            let defaults = UserDefaults.standard
+            if let encoded = try? JSONEncoder().encode(scans) {
+                defaults.set(encoded, forKey: "categoryScans")
+            }
+        }
     
     // Function to save a product to UserDefaults
     func saveProductToUserDefaults(_ product: productStorage) {

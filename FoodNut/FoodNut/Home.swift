@@ -15,6 +15,7 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     @IBOutlet weak var welcomeLabel: UILabel!
     
     var recentProducts: [productStorage] = []
+    var categoryScanCounts: [String: Int] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +33,6 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
                 }
             }
             recentsCollectionView.reloadData()
-            print("loading")
             print(recentProducts)
         }
 
@@ -110,6 +110,7 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
         super.viewWillAppear(animated)
         
         loadRecentProducts()
+        loadCategoryScanCounts()
         
         // Set up the authentication state listener
         handle = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
@@ -139,6 +140,17 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
                 completion("User")
             }
         }
+    }
+    
+    // Function to load category scan counts from UserDefaults
+    private func loadCategoryScanCounts() {
+        let defaults = UserDefaults.standard
+        if let savedScans = defaults.object(forKey: "categoryScans") as? Data {
+            if let decodedScans = try? JSONDecoder().decode([String: Int].self, from: savedScans) {
+                categoryScanCounts = decodedScans
+            }
+        }
+        print(categoryScanCounts)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
