@@ -140,6 +140,7 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
         // Initialize table view
         tableView = UITableView()
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "NutritionDetailCell")
         
         // Add subviews
@@ -168,7 +169,7 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
 
     
     // MARK: - UITableViewDataSource
-    
+        
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return nutritionDetails.count
     }
@@ -212,4 +213,21 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
     
     
 
+}
+
+extension DetailedViewController: UITableViewDelegate {
+     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Assuming the "Nova Group" is the seventh item in nutritionDetails array
+        if indexPath.row == 6 {
+            let novaGroupVC = NovaGroupViewController()
+            // Set any properties on novaGroupVC if needed
+            self.navigationController?.pushViewController(novaGroupVC, animated: true)
+        }
+         if indexPath.row == 5 {
+             let nutriscoreVC = NutriScoreViewController()
+             //set properties on nutriscore
+             self.navigationController?.pushViewController(nutriscoreVC, animated: true)
+             
+         }
+    }
 }

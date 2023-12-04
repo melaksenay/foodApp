@@ -21,7 +21,7 @@ struct Product: Decodable {
     var productName: String
     var nutriments: NutritionFacts?
     var imageURL : String
-    var nutriscore: String
+    var nutriscore: String?
     var catHierarchy: [String]
     var novaGroup: Double?
     var ingredients: String?
@@ -240,15 +240,22 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 print("Fetched product response: \(productResponse)")
+                var nutrientScore = "No Score"
+                if let score = productResponse.product.nutriscore?.uppercased(){
+                    nutrientScore = "NutriScore: \(score)"
+                } else{
+                    nutrientScore = "NutriScore: No Data"
+                }
                 
                 if(productResponse.status == 1){
+                    
                     let newProduct = productStorage(
                         
                         name: productResponse.product.productName, id: productResponse.code,
                         
                         imageURL: productResponse.product.imageURL,
                         
-                        score: productResponse.product.nutriscore,
+                        score: nutrientScore,
                         
                         calories: "\(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")",
                         
@@ -300,13 +307,8 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 } else{
                     detailedVC.additives = "No Data/No harmful additives found"
                 }
-                    
-                    
-               
-                            
-                
-                
-                detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore.uppercased())" // fix this.
+                detailedVC.nutriscore = nutrientScore
+//                detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore.uppercased())" // fix this.
                 detailedVC.code = productResponse.code
                 detailedVC.productName = productResponse.product.productName
                 detailedVC.caloriesPerServing = "Calorie content: \(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")"
