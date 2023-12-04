@@ -195,6 +195,7 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
             } else {
                 // No user is signed in
                 self?.welcomeLabel.text = "Welcome, Guest"
+                print("no user - home")
             }
         }
         
