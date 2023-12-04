@@ -156,7 +156,7 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     
     private func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void, errorHandler: @escaping (String) -> Void) {
-        let urlString = "https://world.openfoodfacts.net/api/v2/product/\(code)"
+        let urlString = "https://world.openfoodfacts.org/api/v2/product/\(code)"
         print("Searching open food facts for \(urlString)")
         
         guard let url = URL(string: urlString) else {
