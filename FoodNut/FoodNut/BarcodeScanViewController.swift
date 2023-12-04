@@ -271,17 +271,22 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                     return
                 }
 
+                
                 let detailedVC = DetailedViewController()
                 // Configure detailedVC with productResponse data
                 detailedVC.code = productResponse.code
                 detailedVC.productName = productResponse.product.productName ?? "No name"
-                detailedVC.carbsPerServing = "Carb content: \(productResponse.product.nutriments?.carbsPerServing?.description ?? "Data not available")"
-                detailedVC.fatPerServing = "Fat content: \(productResponse.product.nutriments?.fatPerServing?.description ?? "Data not available")"
-                detailedVC.proteinsPerServing = "Protein content: \(productResponse.product.nutriments?.proteinsPerServing?.description ?? "Data not available")"
+                detailedVC.carbsPerServing = "Carb content (g): \(productResponse.product.nutriments?.carbsPerServing?.description ?? "Data not available")"
+                detailedVC.fatPerServing = "Fat content (g): \(productResponse.product.nutriments?.fatPerServing?.description ?? "Data not available")"
+                detailedVC.proteinsPerServing = "Protein content (g): \(productResponse.product.nutriments?.proteinsPerServing?.description ?? "Data not available")"
                 detailedVC.caloriesPerServing = "Calorie content: \(productResponse.product.nutriments?.caloriesPerServing?.description ?? "Data not available")"
                 detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore?.uppercased() ?? "No Data") (Click to learn more)"
                 detailedVC.novaGroup = "NOVA Group: \(productResponse.product.novaGroup?.description ?? "No Data") (Click to learn more)"
-                detailedVC.additives = "Additives: \(productResponse.product.additives?.joined(separator: ", ") ?? "No Data found")"
+                detailedVC.additives = "Additives: \(productResponse.product.additives?.joined(separator: ", ") ?? "No Data/No Harmful Additives")"
+                if productResponse.product.additives?.count == 0 {
+                    detailedVC.additives = "Additives: No Data/No Harmful Additives"
+                }
+                
 
                 let imageURLString = self.fetchImageURLString(for: code)
                 if let imageURL = URL(string: imageURLString) {
@@ -366,7 +371,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
         
         guard let url = URL(string: urlString) else {
             print("URL construction failed.")
-            errorHandler("Failed to construct URL.")
+            errorHandler("Failed to construct URL. Please click off this tab and click back onto camera tab")
             return
         }
         
@@ -374,7 +379,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
             // Check for network errors
             if let error = error {
                 print("Error during URLSession data task: \(error.localizedDescription)")
-                errorHandler("Error during URLSession data task: \(error.localizedDescription)")
+                errorHandler("Error during URLSession data task: \(error.localizedDescription). Please click off this tab and click back onto camera tab")
                 return
             }
             
@@ -389,7 +394,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
             // Check for data
             guard let data = data else {
                 print("No data returned from server")
-                errorHandler("No data returned from server.")
+                errorHandler("No data returned from server. Please click off this tab and click back onto camera tab.")
                 return
             }
             
