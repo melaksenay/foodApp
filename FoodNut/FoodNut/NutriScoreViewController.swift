@@ -23,7 +23,7 @@ class NutriScoreViewController: UIViewController {
         // Create and set up the header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.text = "NOVA Philosophy"
+        headerLabel.text = "NutriScore Philosophy"
         headerLabel.font = UIFont.boldSystemFont(ofSize: 24)
         headerLabel.textAlignment = .center
         scrollView.addSubview(headerLabel)
@@ -64,15 +64,13 @@ class NutriScoreViewController: UIViewController {
     private func createAttributedBodyText() -> NSAttributedString {
            let boldFontAttribute = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18)]
            let regularFontAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
-           
-           let attributedString = NSMutableAttributedString(string: "Group 1: Unprocessed or minimally processed ingredients\n\n", attributes: boldFontAttribute)
+        let attributedString = NSMutableAttributedString(string: "Quick and Dirty:\n\n", attributes: boldFontAttribute)
+        attributedString.append(NSAttributedString(string: "\(quickAndDirty)\n\n", attributes: regularFontAttribute))
+        attributedString.append(NSAttributedString(string: "Some More Detail:\n\n", attributes: boldFontAttribute))
+        attributedString.append(NSAttributedString(string: "About NutriScore System:\n\n", attributes: boldFontAttribute))
            attributedString.append(NSAttributedString(string: "\(aDescription)\n\n", attributes: regularFontAttribute))
-           attributedString.append(NSAttributedString(string: "Group 2: Processed culinary ingredients\n\n", attributes: boldFontAttribute))
+           attributedString.append(NSAttributedString(string: "Insights from NutriScore:\n\n", attributes: boldFontAttribute))
         attributedString.append(NSAttributedString(string: "\(bDescription)\n\n", attributes: regularFontAttribute))
-        attributedString.append(NSAttributedString(string: "Group 3: Processed foods\n\n", attributes: boldFontAttribute))
-        attributedString.append(NSAttributedString(string: "\(cDescription)\n\n", attributes: regularFontAttribute))
-        attributedString.append(NSAttributedString(string: "Group 4: Ultra-processed food and drink products\n\n", attributes: boldFontAttribute))
-        attributedString.append(NSAttributedString(string: "\(dDescription)\n\n", attributes: regularFontAttribute))
 
            return attributedString
        }
@@ -80,34 +78,25 @@ class NutriScoreViewController: UIViewController {
 
 // Definitions for each rank's description
 let aDescription = """
-- Comprises whole, unaltered foods or those with minimal processing
-- Includes fresh fruits, vegetables, grains, legumes, meats, and dairy
-- Processes used don't add external substances like salt, sugar, or fats
-- Aims to extend the natural food's life and aid in culinary preparation
-- Encourages health and wellness through nutrient-rich, natural food consumption
+- Utilizes a 5-category ranking (A to E) to indicate nutritional quality of food products.
+- Category A (best) to E (worst) based on content of key nutrients.
+- Developed from the British Food Standards Agency system.
+- Factors in energy, saturated fats, sugars, sodium, fibers, proteins, and presence of fruits, vegetables, legumes, nuts.
+- Aimed at guiding healthier food choices and preventing chronic diseases.
 """
 
 let bDescription = """
-- Contains processed ingredients derived from natural foods or nature
-- Used to prepare, season, and cook, enhancing the flavor of dishes
-- Rarely consumed on their own, used in conjunction with Group 1 foods
-- Can include salt, sugar, oils, and preservatives to maintain product quality
-- Integral for diverse and flavorful home-cooked meals and recipes
+- Higher scores (D and E) are linked to increased health risks, including cancer and mortality from various chronic diseases.
+- Nutri-Score effectively rates nutritional quality across different food categories and dietary patterns globally.
+- Selecting products rated A or B can lead to healthier dietary choices and reduce the risk of chronic diseases.
 """
 
-let cDescription = """
-- Simple processed foods with added sugars, oils, or salts
-- Includes canned vegetables, cured meats, and freshly made bread
-- Manufactured to extend durability or enhance sensory qualities
-- Should be consumed in balance with Group 1 foods for nutritional benefits
-- Offers convenience but may contain preservatives for longer shelf life
+let quickAndDirty = """
+- Score A: Healthy food. Can be eaten every day.
+- Score B: Healthy food. Slightly processed, but not harmful.
+- Score C: Not dangerous enough to be labeled D or E, enjoy occasionally!
+- Score D: Harmful if eaten in the long-term. Enjoy occasionally.
+- Score E: Dangerous if eaten in the long-term. Try to cut out of your diet.
 """
 
-let dDescription = """
-- Industrial formulations with multiple additives and ingredients
-- Ingredients aim to mimic or enhance flavors and sensory appeal
-- Often replace natural foods with ready-to-eat or heat options
-- High in palatability but low in nutritional value; limit intake
-- Typically packaged attractively with aggressive marketing tactics
-"""
 
