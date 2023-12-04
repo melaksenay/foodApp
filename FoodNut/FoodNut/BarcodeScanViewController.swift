@@ -264,9 +264,9 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 print("Fetched product response: \(productResponse)")
                 var nutrientScore = "No Score"
                 if let score = productResponse.product.nutriscore?.uppercased(){
-                    nutrientScore = "NutriScore: \(score)"
+                    nutrientScore = "NutriScore: \(score) (Click to learn more)"
                 } else{
-                    nutrientScore = "NutriScore: No Data"
+                    nutrientScore = "NutriScore: No Data (Click to learn more)"
                 }
                 
                 if(productResponse.status == 1){
@@ -337,10 +337,11 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 detailedVC.fatPerServing = "Fat content: \(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")"
                 detailedVC.proteinsPerServing = "Protein content: \(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")"
                 detailedVC.carbsPerServing = "Carb content: \(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")"
+                
                 if let novaGroup = productResponse.product.novaGroup {
-                    detailedVC.novaGroup = "Nova Group: \(novaGroup)"
+                    detailedVC.novaGroup = "NOVA Group: \(novaGroup) (Click to learn more)"
                 } else {
-                    detailedVC.novaGroup = "No Data"
+                    detailedVC.novaGroup = "No Data (Click to learn more)"
                 }
                 if let ingredients = productResponse.product.ingredients{
                     detailedVC.ingredients = "Ingredients to watch: \(ingredients)"

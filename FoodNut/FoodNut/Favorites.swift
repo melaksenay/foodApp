@@ -49,11 +49,11 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         detailedVC.productName = selectedProduct.name
         detailedVC.code = selectedProduct.code
         detailedVC.nutriscore = selectedProduct.nutriscore
-        detailedVC.caloriesPerServing = "Calorie content: \(selectedProduct.caloriesPerServing)"
-        detailedVC.fatPerServing = "Fat content: \(selectedProduct.fatPerServing)"
-        detailedVC.proteinsPerServing = "Protein content: \(selectedProduct.proteinsPerServing)"
-        detailedVC.carbsPerServing = "Carb content: \(selectedProduct.carbsPerServing)"
-        detailedVC.novaGroup = "Nova Group: \(selectedProduct.novaGroup)"
+        detailedVC.caloriesPerServing = "\(selectedProduct.caloriesPerServing)"
+        detailedVC.fatPerServing = "\(selectedProduct.fatPerServing)"
+        detailedVC.proteinsPerServing = "\(selectedProduct.proteinsPerServing)"
+        detailedVC.carbsPerServing = "\(selectedProduct.carbsPerServing)"
+        detailedVC.novaGroup = "\(selectedProduct.novaGroup)"
         detailedVC.additives = selectedProduct.additives
         detailedVC.showButton = false
 
