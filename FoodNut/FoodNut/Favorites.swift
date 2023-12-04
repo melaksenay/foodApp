@@ -19,13 +19,18 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         collectionView.delegate = self
         collectionView.dataSource = self
 
-        // Do any additional setup after loading the view.
+        
     }
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scanCell", for: indexPath) as! FavoritesCell
+        
+        cell.favoriteLabel.layer.cornerRadius = cell.favoriteLabel.frame.size.width / 18
+        cell.favoriteLabel.clipsToBounds = true
+        
+        
         
         
         return cell

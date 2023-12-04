@@ -4,7 +4,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseCore
 
-class onboarding: UIViewController {
+class onboarding: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var createAccountButton: UIButton!
     @IBOutlet weak var accountLabel: UILabel!
@@ -22,11 +22,20 @@ class onboarding: UIViewController {
         super.viewDidLoad()
         // Setup initial state
         toggleLoginCreate(isLogin: isLogin)
+        nameInput.delegate = self
+        emailInput.delegate = self
+        passwordInput.delegate = self
         
         infoLabel.text = "Passwords must be at least 6 characters in length, include one capital letter, and include one numeric character."
         
         db = Firestore.firestore()
     }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // This will dismiss the keyboard
+        return true
+    }
+
     
     @IBAction func loginButtonClicked(_ sender: UIButton) {
         isLogin.toggle() // Toggle the state between login and create account
@@ -74,7 +83,7 @@ class onboarding: UIViewController {
                         self?.db.collection("users").document(userID).setData([
                             "name": name,
                             "photo": "url_of_the_photo",
-                            "userFavorites": [String](), // Empty string array
+                            "userFavorites": [Any](), // Empty string array
                             "recentScans": [String](), // Empty string array
                             "totalItemsScanned": 0
                         ]) { err in
