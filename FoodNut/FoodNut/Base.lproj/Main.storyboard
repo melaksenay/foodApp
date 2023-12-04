@@ -307,6 +307,7 @@
                     <navigationItem key="navigationItem" id="LDh-lN-Baz"/>
                     <connections>
                         <outlet property="collectionView" destination="tue-Fv-7dC" id="uIl-az-a58"/>
+                        <outlet property="favoritesLabel" destination="RGj-hV-wJI" id="EyU-Fq-8iI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aFP-pb-T5X" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

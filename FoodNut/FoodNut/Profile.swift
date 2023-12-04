@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
 
 class Profile: UIViewController {
     
@@ -14,6 +15,7 @@ class Profile: UIViewController {
     @IBOutlet weak var profilePicture: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     var handle: AuthStateDidChangeListenerHandle?
+    var db: Firestore!  // Firestore database reference
     
     @IBOutlet weak var updateProfile: UIButton!
     
@@ -27,6 +29,21 @@ class Profile: UIViewController {
         updateProfile.clipsToBounds = true
         logoutButton.layer.cornerRadius = logoutButton.frame.size.width / 18
         logoutButton.clipsToBounds = true
+        db = Firestore.firestore()  // Initialize Firestore
+    }
+    
+    func fetchUserName(userID: String, completion: @escaping (String) -> Void) {
+        // Access the user's document using their UID
+        db.collection("users").document(userID).getDocument { (document, error) in
+            if let document = document, document.exists {
+                let data = document.data()
+                let name = data?["name"] as? String ?? "User"
+                completion(name)
+            } else {
+                print("Document does not exist")
+                completion("User")
+            }
+        }
     }
 
     
@@ -34,10 +51,19 @@ class Profile: UIViewController {
         super.viewWillAppear(animated)
         
         // Set up the authentication state listener
-        handle = Auth.auth().addStateDidChangeListener { auth, user in
-            // Handle authentication state
+        handle = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+            // Check if a user is logged in
+            if let userID = user?.uid {
+                // Fetch the user's name and update nameLabel
+                self?.fetchUserName(userID: userID) { fetchedName in
+                    DispatchQueue.main.async {
+                        self?.nameLabel.text = fetchedName
+                    }
+                }
+            }
         }
     }
+
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)

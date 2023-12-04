@@ -17,6 +17,7 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     var db:Firestore!
     var handle: AuthStateDidChangeListenerHandle?
+    @IBOutlet weak var favoritesLabel: UILabel!
     var userid: String?
     
     var products = [FirebaseProduct]()
@@ -33,6 +34,9 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         collectionView.dataSource = self
         
         db = Firestore.firestore()
+        
+        favoritesLabel.layer.cornerRadius = favoritesLabel.frame.size.width / 18
+        favoritesLabel.clipsToBounds = true
 
         
     }
@@ -51,7 +55,7 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         detailedVC.carbsPerServing = "Carb content: \(selectedProduct.carbsPerServing)"
         detailedVC.novaGroup = "Nova Group: \(selectedProduct.novaGroup)"
         detailedVC.additives = selectedProduct.additives
-        detailedVC.showButton = false 
+        detailedVC.showButton = false
 
         // Check for cached image
         if let cachedImage = imageCache[selectedProduct.imageURL] {
