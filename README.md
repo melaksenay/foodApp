@@ -1,2 +1,3 @@
 # foodApp
-Read barcodes/Nutrition Facts. Subject to change the description.
+Open PDF for breakdown
+[readme.pdf](https://github.com/melaksenay/foodApp/files/13545522/readme.pdf)
