@@ -20,6 +20,7 @@ struct FirebaseProduct {
     var nutriscore: String
     var novaGroup: String
     var additives: String
+    var imageURL: String
 
     var dictionary: [String: Any] {
         return [
@@ -31,7 +32,8 @@ struct FirebaseProduct {
             "caloriesPerServing": caloriesPerServing,
             "nutriscore": nutriscore,
             "novaGroup": novaGroup,
-            "additives": additives
+            "additives": additives,
+            "imageURL": imageURL
         ]
     }
 }
@@ -48,6 +50,7 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
     var novaGroup: String?
     var ingredients: String?
     var additives: String?
+    var imageUrl: String?
     
     var productImage: UIImage?
     
@@ -111,7 +114,8 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
             caloriesPerServing: caloriesPerServing ?? "",
             nutriscore: nutriscore ?? "",
             novaGroup: novaGroup ?? "",
-            additives: additives ?? ""
+            additives: additives ?? "",
+            imageURL: imageUrl ?? ""
         )
 
         let userRef = db.collection("users").document(userID)
