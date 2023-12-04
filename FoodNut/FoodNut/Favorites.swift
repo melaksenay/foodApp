@@ -13,7 +13,7 @@ import FirebaseFirestore
 
 
 
-class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     var db:Firestore!
     var handle: AuthStateDidChangeListenerHandle?
@@ -97,8 +97,10 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "favCell", for: indexPath) as! FavoritesCell
         
-        cell.favoriteLabel.layer.cornerRadius = cell.favoriteLabel.frame.size.width / 18
-        cell.favoriteLabel.clipsToBounds = true
+        //cell.favoriteLabel.layer.cornerRadius = cell.favoriteLabel.frame.size.width / 18
+        //cell.favoriteLabel.clipsToBounds = true
+        cell.favoriteLabel.numberOfLines = 0
+        
         
         let product = products[indexPath.item]
             cell.favoriteLabel.text = product.name
@@ -123,6 +125,12 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+            let width = collectionView.frame.size.width / 3
+            let height = width * 1.5
+            return CGSize(width: width, height: height)
+        }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -131,6 +139,15 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return products.count
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 1 // Your desired spacing between cells
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 1 // Your desired spacing between lines
+    }
+
     
     
     override func viewWillAppear(_ animated: Bool) {
