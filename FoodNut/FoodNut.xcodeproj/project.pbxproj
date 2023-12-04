@@ -18,6 +18,7 @@
 		08111A6F2B1BD092009BCBD0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08111A6E2B1BD092009BCBD0 /* GoogleService-Info.plist */; };
 		08111A712B1C1F69009BCBD0 /* Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08111A702B1C1F69009BCBD0 /* Favorites.swift */; };
 		08111A732B1C20CF009BCBD0 /* FavoritesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08111A722B1C20CF009BCBD0 /* FavoritesCell.swift */; };
+		08111A752B1D4FBC009BCBD0 /* SearchCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08111A742B1D4FBC009BCBD0 /* SearchCollectionViewCell.swift */; };
 		0893CCFD2B0339DC00897317 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0893CCFC2B0339DC00897317 /* Welcome.swift */; };
 		08EC9CDF2AFC1B6200A705B8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EC9CDE2AFC1B6200A705B8 /* AppDelegate.swift */; };
 		08EC9CE12AFC1B6200A705B8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EC9CE02AFC1B6200A705B8 /* SceneDelegate.swift */; };
@@ -51,6 +52,7 @@
 		08111A6E2B1BD092009BCBD0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		08111A702B1C1F69009BCBD0 /* Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorites.swift; sourceTree = "<group>"; };
 		08111A722B1C20CF009BCBD0 /* FavoritesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesCell.swift; sourceTree = "<group>"; };
+		08111A742B1D4FBC009BCBD0 /* SearchCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCollectionViewCell.swift; sourceTree = "<group>"; };
 		0893CCFC2B0339DC00897317 /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		08EC9CDB2AFC1B6200A705B8 /* FoodNut.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoodNut.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08EC9CDE2AFC1B6200A705B8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				08EC9CE72AFC1B6300A705B8 /* Assets.xcassets */,
 				08EC9CE92AFC1B6300A705B8 /* LaunchScreen.storyboard */,
 				4D10E81A2B02C34E00D76A32 /* onboarding.swift */,
+				08111A742B1D4FBC009BCBD0 /* SearchCollectionViewCell.swift */,
 				08EC9CEC2AFC1B6300A705B8 /* Info.plist */,
 				08111A6E2B1BD092009BCBD0 /* GoogleService-Info.plist */,
 			);
@@ -224,6 +227,7 @@
 				08111A692B1BBD03009BCBD0 /* RecentsCollectionViewCell.swift in Sources */,
 				08111A712B1C1F69009BCBD0 /* Favorites.swift in Sources */,
 				08111A5D2B190711009BCBD0 /* Profile.swift in Sources */,
+				08111A752B1D4FBC009BCBD0 /* SearchCollectionViewCell.swift in Sources */,
 				0893CCFD2B0339DC00897317 /* Welcome.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
