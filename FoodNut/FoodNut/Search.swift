@@ -282,7 +282,7 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if let query = searchBarOutlet.text {
+        if let query = searchBar.text {
             // Replace all spaces in the query with plusses
             let modifiedQuery = query.replacingOccurrences(of: " ", with: "+")
 
@@ -294,7 +294,10 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
                 }
             }
         }
+        
+        searchBar.resignFirstResponder() // Add this line to dismiss the keyboard
     }
+
 
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
