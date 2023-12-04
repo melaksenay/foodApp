@@ -327,7 +327,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 let imageURLString = self.fetchImageURLString(for: code)
                 if let imageURL = URL(string: imageURLString) {
                     self.downloadImage(from: imageURL) { image in
-                    detailedVC.productImage = image
+                    detailedVC.productImage = image ?? UIImage (named: "defaultImage")
                     print("end downloading")
                     print(image!)
                         
@@ -439,9 +439,12 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
     func fetchImageURLString(for code: String) -> String {
         let baseURL = "https://images.openfoodfacts.org/images/products"
         let inputString = code
-        var finalURL = ""
+        // Default image URL
+        let defaultImageURL = "https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg"
+        // Initialize finalURL with default image URL
+        var finalURL = defaultImageURL
         
-        if (code.count > 8) {
+        if code.count > 8 {
             let regexPattern = "^(...)(...)(...)(.*)$"
             
             do {
@@ -460,13 +463,16 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 print("Error creating regular expression: \(error)")
             }
         } else {
-            finalURL = baseURL + "/" + inputString + "1.400.jpg"
+            finalURL = "\(baseURL)/\(inputString)/1.400.jpg"
         }
         
         print("Product Image URL - \(finalURL)")
-        return finalURL
+        let detailedVC = DetailedViewController()
+        detailedVC.imageUrl = finalURL
         
+        return finalURL
     }
+
     
     func downloadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
