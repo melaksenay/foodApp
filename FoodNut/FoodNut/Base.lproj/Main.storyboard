@@ -327,26 +327,79 @@
             </objects>
             <point key="canvasLocation" x="1820.6106870229007" y="3031.6901408450708"/>
         </scene>
-        <!--View Controller-->
+        <!--Update Profile Vew-->
         <scene sceneID="oA3-Wr-lMT">
             <objects>
-                <viewController id="kRi-CW-zV7" sceneMemberID="viewController">
+                <viewController id="kRi-CW-zV7" customClass="UpdateProfileVew" customModule="FoodNut" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="fdk-h0-gwH">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Current Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g9k-MO-Zga">
+                                <rect key="frame" x="80" y="194" width="233" height="34"/>
+                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                <color key="textColor" systemColor="systemGrayColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DRt-e4-fjd">
+                                <rect key="frame" x="80" y="273" width="233" height="34"/>
+                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                <color key="textColor" systemColor="systemGrayColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change Username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ei5-Sn-xmZ">
+                                <rect key="frame" x="100" y="130" width="193" height="24"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <color key="textColor" red="1" green="0.59071263269999996" blue="0.48536660949999999" alpha="0.8980392157" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YUY-bM-jkL">
+                                <rect key="frame" x="154" y="348" width="85" height="35"/>
+                                <color key="backgroundColor" red="1" green="0.94589073560000003" blue="0.79370801280000003" alpha="0.8980392157" colorSpace="custom" customColorSpace="displayP3"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Confirm">
+                                    <color key="baseForegroundColor" red="1" green="0.59071263269999996" blue="0.48536660949999999" alpha="0.8980392157" colorSpace="custom" customColorSpace="displayP3"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="confirmButtonClicked:" destination="kRi-CW-zV7" eventType="touchUpInside" id="jrm-4U-mOH"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="JOu-gS-5RX"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="YUY-bM-jkL" firstAttribute="top" secondItem="DRt-e4-fjd" secondAttribute="bottom" constant="41" id="0eR-GY-lSz"/>
+                            <constraint firstItem="JOu-gS-5RX" firstAttribute="trailing" secondItem="YUY-bM-jkL" secondAttribute="trailing" constant="154" id="6iZ-qu-cSV"/>
+                            <constraint firstItem="ei5-Sn-xmZ" firstAttribute="top" secondItem="JOu-gS-5RX" secondAttribute="top" constant="27" id="BBU-aM-JNJ"/>
+                            <constraint firstItem="g9k-MO-Zga" firstAttribute="top" secondItem="ei5-Sn-xmZ" secondAttribute="bottom" constant="40" id="Bne-45-lgP"/>
+                            <constraint firstItem="g9k-MO-Zga" firstAttribute="leading" secondItem="JOu-gS-5RX" secondAttribute="leading" constant="80" id="N0E-8Y-mMU"/>
+                            <constraint firstItem="JOu-gS-5RX" firstAttribute="trailing" secondItem="DRt-e4-fjd" secondAttribute="trailing" constant="80" id="XHg-CD-Lc5"/>
+                            <constraint firstItem="ei5-Sn-xmZ" firstAttribute="leading" secondItem="JOu-gS-5RX" secondAttribute="leading" constant="100" id="Xd5-oR-5ez"/>
+                            <constraint firstItem="DRt-e4-fjd" firstAttribute="top" secondItem="g9k-MO-Zga" secondAttribute="bottom" constant="45" id="dI5-me-LCc"/>
+                            <constraint firstItem="YUY-bM-jkL" firstAttribute="leading" secondItem="JOu-gS-5RX" secondAttribute="leading" constant="154" id="fhP-xo-Ppj"/>
+                            <constraint firstItem="DRt-e4-fjd" firstAttribute="leading" secondItem="JOu-gS-5RX" secondAttribute="leading" constant="80" id="n7h-5d-fPN"/>
+                            <constraint firstItem="JOu-gS-5RX" firstAttribute="trailing" secondItem="g9k-MO-Zga" secondAttribute="trailing" constant="80" id="nHA-xa-m6H"/>
+                            <constraint firstItem="JOu-gS-5RX" firstAttribute="trailing" secondItem="ei5-Sn-xmZ" secondAttribute="trailing" constant="100" id="sme-sj-X1c"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="YIM-dQ-ZuH"/>
+                    <connections>
+                        <outlet property="confirmButton" destination="YUY-bM-jkL" id="1N5-Wj-AbB"/>
+                        <outlet property="currentUsername" destination="g9k-MO-Zga" id="OMk-av-DRs"/>
+                        <outlet property="newUsername" destination="DRt-e4-fjd" id="DEv-N6-dTs"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KEb-gX-usM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2704" y="3033"/>
+            <point key="canvasLocation" x="2703.0534351145038" y="3032.3943661971834"/>
         </scene>
         <!--Weclome-->
         <scene sceneID="AXk-30-BJn">
             <objects>
-                <viewController id="i0L-aX-i22" customClass="Weclome" customModule="FoodNut" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Welcome" id="i0L-aX-i22" customClass="Weclome" customModule="FoodNut" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yJz-Kh-dL7">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -406,8 +459,10 @@
                             <constraint firstItem="IUs-ZS-asT" firstAttribute="trailing" secondItem="VJl-aV-rGg" secondAttribute="trailing" constant="155" id="YzR-a0-NXR"/>
                             <constraint firstItem="IUs-ZS-asT" firstAttribute="trailing" secondItem="g3w-Zv-33p" secondAttribute="trailing" constant="113" id="cdB-4y-LRx"/>
                             <constraint firstItem="g3w-Zv-33p" firstAttribute="top" secondItem="Sjw-pc-7q4" secondAttribute="bottom" constant="92" id="emi-7A-BDW"/>
+                            <constraint firstItem="IUs-ZS-asT" firstAttribute="bottom" secondItem="HxA-sg-Ckg" secondAttribute="bottom" constant="50" id="ff9-0g-Qv2"/>
                             <constraint firstItem="IUs-ZS-asT" firstAttribute="bottom" secondItem="HxA-sg-Ckg" secondAttribute="bottom" constant="50" id="hEC-OD-gc3"/>
                             <constraint firstItem="Sjw-pc-7q4" firstAttribute="top" secondItem="VJl-aV-rGg" secondAttribute="bottom" constant="39" id="jBQ-nc-TEg"/>
+                            <constraint firstItem="HxA-sg-Ckg" firstAttribute="top" secondItem="MTZ-mf-FlV" secondAttribute="bottom" constant="27" id="pHz-vA-kFO"/>
                             <constraint firstItem="IUs-ZS-asT" firstAttribute="trailing" secondItem="MTZ-mf-FlV" secondAttribute="trailing" constant="25" id="tsJ-ww-ucW"/>
                             <constraint firstItem="MTZ-mf-FlV" firstAttribute="leading" secondItem="IUs-ZS-asT" secondAttribute="leading" constant="25" id="vgL-xy-gQx"/>
                             <constraint firstItem="IUs-ZS-asT" firstAttribute="trailing" secondItem="HxA-sg-Ckg" secondAttribute="trailing" constant="49" id="zS6-OU-3Ln"/>
@@ -505,7 +560,7 @@
                                     <action selector="loginButtonClicked:" destination="nzF-GR-CF8" eventType="touchUpInside" id="46c-UE-oZN"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FEEL BETTER" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JRp-iu-IXM">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FEEL BETTER" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JRp-iu-IXM">
                                 <rect key="frame" x="122" y="533" width="149" height="32"/>
                                 <fontDescription key="fontDescription" name="Futura-Bold" family="Futura" pointSize="24"/>
                                 <color key="textColor" red="0.72886900210000005" green="0.68991552140000001" blue="0.7887628337" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -701,6 +756,12 @@
         <image name="todd" width="705" height="705"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGrayColor">
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
             <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

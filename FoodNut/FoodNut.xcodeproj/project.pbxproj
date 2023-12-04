@@ -28,6 +28,7 @@
 		4158C6882AFC6481005A6B06 /* BarcodeScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4158C6872AFC6481005A6B06 /* BarcodeScanViewController.swift */; };
 		4158C68A2AFC693E005A6B06 /* DetailedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4158C6892AFC693E005A6B06 /* DetailedViewController.swift */; };
 		4D10E81B2B02C34E00D76A32 /* onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D10E81A2B02C34E00D76A32 /* onboarding.swift */; };
+		4DF9C5E82B1D4DB4002965EB /* UpdateProfileVew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF9C5E72B1D4DB3002965EB /* UpdateProfileVew.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -63,6 +64,7 @@
 		4158C6872AFC6481005A6B06 /* BarcodeScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanViewController.swift; sourceTree = "<group>"; };
 		4158C6892AFC693E005A6B06 /* DetailedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedViewController.swift; sourceTree = "<group>"; };
 		4D10E81A2B02C34E00D76A32 /* onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onboarding.swift; sourceTree = "<group>"; };
+		4DF9C5E72B1D4DB3002965EB /* UpdateProfileVew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileVew.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 				0893CCFC2B0339DC00897317 /* Welcome.swift */,
 				4158C6872AFC6481005A6B06 /* BarcodeScanViewController.swift */,
 				4158C6892AFC693E005A6B06 /* DetailedViewController.swift */,
+				4DF9C5E72B1D4DB3002965EB /* UpdateProfileVew.swift */,
 				08EC9CE72AFC1B6300A705B8 /* Assets.xcassets */,
 				08EC9CE92AFC1B6300A705B8 /* LaunchScreen.storyboard */,
 				4D10E81A2B02C34E00D76A32 /* onboarding.swift */,
@@ -225,6 +228,7 @@
 				08111A712B1C1F69009BCBD0 /* Favorites.swift in Sources */,
 				08111A5D2B190711009BCBD0 /* Profile.swift in Sources */,
 				0893CCFD2B0339DC00897317 /* Welcome.swift in Sources */,
+				4DF9C5E82B1D4DB4002965EB /* UpdateProfileVew.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
