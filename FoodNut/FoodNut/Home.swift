@@ -224,9 +224,16 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
         if let savedScans = defaults.object(forKey: "categoryScans") as? Data {
             if let decodedScans = try? JSONDecoder().decode([String: Int].self, from: savedScans) {
                 categoryScanCounts = decodedScans
+                var newDictionary = [String: Int]()
+
+                for (key, value) in categoryScanCounts {
+                    let newKey = key.replacingOccurrences(of: "en:", with: "")
+                    newDictionary[newKey] = value
+                }
+                categoryScanCounts = newDictionary
             }
         }
-        print(categoryScanCounts)
+        print("These are the SCAN COUNTS \(categoryScanCounts)")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
