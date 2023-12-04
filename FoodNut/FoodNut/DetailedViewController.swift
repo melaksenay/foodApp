@@ -63,6 +63,7 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        db = Firestore.firestore()
         
         // Prepare the nutrition details
         nutritionDetails = [
@@ -160,23 +161,7 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
         ])
     }
     
-    private func setupAddToFavoritesButton() {
-        addToFavoritesButton.setTitle("Add to Favorites", for: .normal)
-        addToFavoritesButton.addTarget(self, action: #selector(addToFavoritesTapped), for: .touchUpInside)
-        
-        view.addSubview(addToFavoritesButton)
-        
-        addToFavoritesButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            addToFavoritesButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            addToFavoritesButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
-        ])
-    }
-    
-    @objc func addToFavoritesTapped() {
-        print("Add to Favorites tapped!")
-        // Add the logic to handle the tap event for adding to favorites
-    }
+
     
     // MARK: - UITableViewDataSource
     
