@@ -285,7 +285,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                         if let match = self.dangerousAdditives.first(where: {$0[0].contains(additive)}){
                             let modifiedMatch = match[0].split(separator: "-").map(String.init).last?.trimmingCharacters(in: .whitespacesAndNewlines)
                             if let name = modifiedMatch {
-                                additivesString.append("\(name). Risk: \(match[1])\n")
+                                additivesString.append("\n\(name)\nRisk: \(match[1])\n")
                             }
                         }
                     }

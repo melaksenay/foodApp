@@ -39,7 +39,7 @@ struct FirebaseProduct {
 }
 
 
-class DetailedViewController: UIViewController {
+class DetailedViewController: UIViewController, UITableViewDataSource {
     var code: String?
     var productName: String?
     var carbsPerServing: String?
@@ -48,10 +48,9 @@ class DetailedViewController: UIViewController {
     var caloriesPerServing: String?
     var nutriscore: String?
     var novaGroup: String?
-    var ingredients: String? //might be deprecated.
+    var ingredients: String?
     var additives: String?
     var imageUrl: String?
-    
     
     var productImage: UIImage?
     
@@ -60,15 +59,29 @@ class DetailedViewController: UIViewController {
     var userid: String?
     
     let addToFavoritesButton = UIButton(type: .system)
+    var tableView: UITableView!
+    
+    var nutritionDetails: [(String)] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = .white
         db = Firestore.firestore()
         
-//        print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil"), Image - \(String(describing: productImage))")
-        setupUI()
+        // Prepare the nutrition details
+        nutritionDetails = [
+            (productName ?? "Not available"),
+            (carbsPerServing ?? "Not available"),
+            (fatPerServing ?? "Not available"),
+            (proteinsPerServing ?? "Not available"),
+            (caloriesPerServing ?? "Not available"),
+            (nutriscore ?? "Not available"),
+            (novaGroup ?? "Not available"),
+            (additives ?? "Not available")
+        ]
+        
         setupAddToFavoritesButton()
+        setupUI()
     }
     
     private func setupAddToFavoritesButton() {
@@ -119,49 +132,53 @@ class DetailedViewController: UIViewController {
 
     
     private func setupUI() {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .equalSpacing
-        stackView.spacing = 10
-        
-        view.addSubview(stackView)
-        
-        // Constraints
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8)
-        ])
-        
-        // Create and add UIImageView to the stackView
+        // Initialize image view
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = productImage
-        imageView.sizeToFit()
         
-        // Create and add labels to the stackView
-        let nameLabel = createLabel(withText: "\(productName ?? "Not available")")
-        let carbsLabel = createLabel(withText: "\(carbsPerServing ?? "Not available")")
-        let fatLabel = createLabel(withText: "\(fatPerServing ?? "Not available")")
-        let proteinLabel = createLabel(withText: "\(proteinsPerServing ?? "Not available")")
-        let caloriesLabel = createLabel(withText: "\(caloriesPerServing ?? "Not available")")
-        let nutriscoreLabel = createLabel(withText: "\(nutriscore ?? "Not available")")
-        let novaLabel = createLabel(withText: "\(novaGroup ?? "Not available")")
-        let additiveLabel = createLabel(withText: "\(additives ?? "Not available")")
-//        let ingredientsLable = createLabel(withText: "\(ingredients ?? "Not available")")
+        // Initialize table view
+        tableView = UITableView()
+        tableView.dataSource = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "NutritionDetailCell")
         
-        [imageView, nameLabel, carbsLabel, fatLabel, proteinLabel, caloriesLabel, nutriscoreLabel, novaLabel, additiveLabel].forEach { stackView.addArrangedSubview($0) }
+        // Add subviews
+        view.addSubview(imageView)
+        view.addSubview(tableView)
+        
+        // Set up the image view constraints
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+            imageView.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8)
+        ])
+        
+        // Set up the table view constraints
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            tableView.bottomAnchor.constraint(equalTo: addToFavoritesButton.topAnchor, constant: -20)
+        ])
     }
     
-    private func createLabel(withText text: String) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.textColor = .black
-        label.textAlignment = .center
-        label.numberOfLines = 0 //label can wrap if text is longgg
-        return label
+
+    
+    // MARK: - UITableViewDataSource
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return nutritionDetails.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "NutritionDetailCell", for: indexPath)
+        let nutritionDetail = nutritionDetails[indexPath.row]
+        cell.textLabel?.text = "\(nutritionDetail)"
+        cell.textLabel?.numberOfLines = 0
+        return cell
     }
     
     
