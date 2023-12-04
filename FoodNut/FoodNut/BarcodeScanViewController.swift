@@ -18,11 +18,11 @@ struct ProductResponse: Decodable {
 }
 
 struct Product: Decodable {
-    var productName: String
+    var productName: String?
     var nutriments: NutritionFacts?
     var imageURL : String
     var nutriscore: String?
-    var catHierarchy: [String]
+    var catHierarchy: [String]?
     var novaGroup: Double?
     var ingredients: String?
     var additives: [String]?
@@ -235,113 +235,51 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
     
     func found(code: String) {
         print(code)
-    
-        fetchData(for: code) { [weak self] productResponse in
+
+        fetchData(for: code, completion: { [weak self] productResponse in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 print("Fetched product response: \(productResponse)")
-                var nutrientScore = "No Score"
-                if let score = productResponse.product.nutriscore?.uppercased(){
-                    nutrientScore = "NutriScore: \(score) (Click to learn more)"
-                } else{
-                    nutrientScore = "NutriScore: No Data (Click to learn more)"
-                }
                 
-                if(productResponse.status == 1){
-                    
-                    let newProduct = productStorage(
-                        
-                        name: productResponse.product.productName, id: productResponse.code,
-                        
-                        imageURL: productResponse.product.imageURL,
-                        
-                        score: nutrientScore,
-                        
-                        calories: "\(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")",
-                        
-                        fat: "\(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")",
-                        
-                        carbs: "\(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")",
-                        
-                        protein: "\(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")" ,
-                        
-                        hierarchy: productResponse.product.catHierarchy
-                        
-                    )
-                    
-                    self.saveProductToUserDefaults(newProduct)
+                if productResponse.status == 0 {
+                    // Product not found or error in response
+                    let alert = UIAlertController(title: "Not Found", message: "Product not found or unable to scan.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true, completion: nil)
+                    return
                 }
-                else{
-                    print("Could not be found")
-                }
-                
-                if let firstCategory = productResponse.product.catHierarchy.first {
-                    self.updateCategoryScanCount(for: firstCategory)
-                                }
-              
-                //Fill out detailed View Controller
+
                 let detailedVC = DetailedViewController()
-    
-                
-                var additivesString = ""
-                if let calledAdditives = productResponse.product.additives{
-                    print(calledAdditives)
-                    let filteredAdditiveList = calledAdditives.map{ $0.replacingOccurrences(of: "en:", with: "").uppercased()}
-                    
-                    for additive in filteredAdditiveList{
-                        if let match = self.dangerousAdditives.first(where: {$0[0].contains(additive)}){
-                            let modifiedMatch = match[0].split(separator: "-").map(String.init).last?.trimmingCharacters(in: .whitespacesAndNewlines)
-                            if let name = modifiedMatch {
-                                additivesString.append("\n\(name)\nRisk: \(match[1])\n")
-                            }
-                        }
-                    }
-                    if additivesString.count == 0 {
-                        detailedVC.additives = "Additives: No harmful additives found"
-                    }
-                    else{
-                        detailedVC.additives = "Additives: \(additivesString)"
-                
-                    }
-                    
-                } else{
-                    detailedVC.additives = "No Data/No harmful additives found"
-                }
-                detailedVC.nutriscore = nutrientScore
-//                detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore.uppercased())" // fix this.
+                // Configure detailedVC with productResponse data
                 detailedVC.code = productResponse.code
-                detailedVC.productName = productResponse.product.productName
-                detailedVC.caloriesPerServing = "Calorie content: \(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")"
-                detailedVC.fatPerServing = "Fat content: \(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")"
-                detailedVC.proteinsPerServing = "Protein content: \(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")"
-                detailedVC.carbsPerServing = "Carb content: \(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")"
-                
-                if let novaGroup = productResponse.product.novaGroup {
-                    detailedVC.novaGroup = "NOVA Group: \(novaGroup) (Click to learn more)"
-                } else {
-                    detailedVC.novaGroup = "No Data (Click to learn more)"
-                }
-                if let ingredients = productResponse.product.ingredients{
-                    detailedVC.ingredients = "Ingredients to watch: \(ingredients)"
-                } else{
-                    detailedVC.ingredients = "No Data"
-                }
-                
+                detailedVC.productName = productResponse.product.productName ?? "No name"
+                detailedVC.carbsPerServing = "Carb content: \(productResponse.product.nutriments?.carbsPerServing?.description ?? "Data not available")"
+                detailedVC.fatPerServing = "Fat content: \(productResponse.product.nutriments?.fatPerServing?.description ?? "Data not available")"
+                detailedVC.proteinsPerServing = "Protein content: \(productResponse.product.nutriments?.proteinsPerServing?.description ?? "Data not available")"
+                detailedVC.caloriesPerServing = "Calorie content: \(productResponse.product.nutriments?.caloriesPerServing?.description ?? "Data not available")"
+                detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore?.uppercased() ?? "No Data") (Click to learn more)"
+                detailedVC.novaGroup = "NOVA Group: \(productResponse.product.novaGroup?.description ?? "No Data") (Click to learn more)"
+                detailedVC.additives = "Additives: \(productResponse.product.additives?.joined(separator: ", ") ?? "No Data found")"
+
                 let imageURLString = self.fetchImageURLString(for: code)
-                
                 if let imageURL = URL(string: imageURLString) {
                     self.downloadImage(from: imageURL) { image in
-                    detailedVC.productImage = image ?? UIImage (named: "defaultImage")
-                    detailedVC.imageUrl = imageURLString
-                    print("end downloading")
-                    print(image!)
-                        
-                    self.navigationController?.pushViewController(detailedVC, animated: true)
+                        detailedVC.productImage = image ?? UIImage(named: "defaultImage")
+                        detailedVC.imageUrl = imageURLString
+                        print("End downloading")
+
+                        self.navigationController?.pushViewController(detailedVC, animated: true)
                     }
                 }
             }
-        }
-        
+        }, errorHandler: { [weak self] errorMessage in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                let alertController = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(alertController, animated: true, completion: nil)
+            }
+        })
     }
     
     // Function to update category scan count
@@ -400,19 +338,21 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
         return []
     }
     
-    private func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void) {
+    private func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void, errorHandler: @escaping (String) -> Void) {
         let urlString = "https://world.openfoodfacts.net/api/v2/product/\(code)"
         print("Searching open food facts for \(urlString)")
         
         guard let url = URL(string: urlString) else {
             print("URL construction failed.")
+            errorHandler("Failed to construct URL.")
             return
         }
         
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            // Check for errors
+            // Check for network errors
             if let error = error {
                 print("Error during URLSession data task: \(error.localizedDescription)")
+                errorHandler("Error during URLSession data task: \(error.localizedDescription)")
                 return
             }
             
@@ -420,27 +360,29 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
             guard let httpResponse = response as? HTTPURLResponse,
                   (200...299).contains(httpResponse.statusCode) else {
                 print("Server returned an error response")
+                errorHandler("Server returned an error response. This might not be a food item. Please click on any other tab, then click the camera tab again.")
                 return
             }
             
             // Check for data
             guard let data = data else {
                 print("No data returned from server")
+                errorHandler("No data returned from server.")
                 return
             }
             
-            // Decode the JSON data
+            // Attempt to decode the JSON data
             do {
                 let productResponse = try JSONDecoder().decode(ProductResponse.self, from: data)
                 completion(productResponse)
-                print(productResponse.product.nutriments?.caloriesPerServing ?? "no cals")
             } catch {
                 print("Decoding JSON Error: \(error)")
+                errorHandler("Decoding JSON Error: \(error.localizedDescription)")
             }
         }
         task.resume()
     }
-    
+
     func fetchImageURLString(for code: String) -> String {
         let baseURL = "https://images.openfoodfacts.org/images/products"
         let inputString = code
