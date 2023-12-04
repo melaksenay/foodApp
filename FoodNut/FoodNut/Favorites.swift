@@ -95,7 +95,7 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scanCell", for: indexPath) as! FavoritesCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "favCell", for: indexPath) as! FavoritesCell
         
         cell.favoriteLabel.layer.cornerRadius = cell.favoriteLabel.frame.size.width / 18
         cell.favoriteLabel.clipsToBounds = true
@@ -141,16 +141,16 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
             if let userID = user?.uid {
                 // User is signed in
                 self?.userid = userID
+                // Fetch products after confirming the user is signed in
+                self?.fetchProducts()
             } else {
                 // No user is signed in
                 self?.userid = nil
                 print("no user")
             }
         }
-        
-        fetchProducts()
-        print(products)
     }
+
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
