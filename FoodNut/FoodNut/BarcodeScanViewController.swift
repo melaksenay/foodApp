@@ -9,6 +9,8 @@
 
 import UIKit
 import AVFoundation
+import FirebaseFirestore
+import FirebaseAuth
 
 
 struct ProductResponse: Decodable {
@@ -135,10 +137,16 @@ class BarcodeScanView: UIViewController {
     var proteins:String = ""
     var cals:String = ""
     
+    var db: Firestore!  // Firestore database reference
+    var handle: AuthStateDidChangeListenerHandle?
+    var userid: String?
+
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         avCaptureSession = AVCaptureSession()
+        db = Firestore.firestore()  // Initialize Firestore
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
                 self.failed()
@@ -200,6 +208,17 @@ class BarcodeScanView: UIViewController {
                 self.avCaptureSession.startRunning()
             }
         }
+        handle = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+            if let userID = user?.uid {
+                // User is signed in
+                self?.userid = userID
+            } else {
+                // No user is signed in
+                self?.userid = nil
+    
+            }
+        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -207,6 +226,9 @@ class BarcodeScanView: UIViewController {
         
         if (avCaptureSession?.isRunning == true) {
             avCaptureSession.stopRunning()
+        }
+        if let handle = handle {
+            Auth.auth().removeStateDidChangeListener(handle)
         }
     }
     
