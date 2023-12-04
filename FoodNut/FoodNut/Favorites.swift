@@ -20,6 +20,9 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     var userid: String?
     
     var products = [FirebaseProduct]()
+    
+    var imageCache = [String: UIImage]()
+
 
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -33,6 +36,58 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 
         
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedProduct = products[indexPath.item]
+        let detailedVC = DetailedViewController()
+
+        // Populate the detailed view controller with the selected product's data
+        detailedVC.productName = selectedProduct.name
+        detailedVC.code = selectedProduct.code
+        detailedVC.nutriscore = selectedProduct.nutriscore
+        detailedVC.caloriesPerServing = "Calorie content: \(selectedProduct.caloriesPerServing)"
+        detailedVC.fatPerServing = "Fat content: \(selectedProduct.fatPerServing)"
+        detailedVC.proteinsPerServing = "Protein content: \(selectedProduct.proteinsPerServing)"
+        detailedVC.carbsPerServing = "Carb content: \(selectedProduct.carbsPerServing)"
+        detailedVC.novaGroup = "Nova Group: \(selectedProduct.novaGroup)"
+        detailedVC.additives = selectedProduct.additives
+        detailedVC.showButton = false 
+
+        // Check for cached image
+        if let cachedImage = imageCache[selectedProduct.imageURL] {
+            detailedVC.productImage = cachedImage
+        } else {
+            detailedVC.productImage = UIImage(named: "defaultImage")
+            detailedVC.imageUrl = ""
+        }
+
+        // Push the detailed view controller onto the navigation stack
+        self.navigationController?.pushViewController(detailedVC, animated: true)
+    }
+
+    
+    func downloadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
+        // Check cache first
+        if let cachedImage = imageCache[url.absoluteString] {
+            completion(cachedImage)
+            return
+        }
+
+        // Download the image
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self.imageCache[url.absoluteString] = image // Cache the image
+                    completion(image)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+            }
+        }
+    }
+
     
     func fetchProducts() {
         guard let userid = self.userid else {
@@ -74,62 +129,56 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     }
 
 
-    
-    func downloadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
-        DispatchQueue.global().async {
-            if let data = try? Data(contentsOf: url) {
-                DispatchQueue.main.async {
-                    completion(UIImage(data: data))
-                }
-            } else {
-                DispatchQueue.main.async {
-                    completion(nil)
-                }
-            }
-        }
-    }
 
-    
     
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "favCell", for: indexPath) as! FavoritesCell
         
-        //cell.favoriteLabel.layer.cornerRadius = cell.favoriteLabel.frame.size.width / 18
-        //cell.favoriteLabel.clipsToBounds = true
         cell.favoriteLabel.numberOfLines = 0
-        
+        cell.layer.cornerRadius = 10
+        cell.layer.masksToBounds = true
         
         let product = products[indexPath.item]
-            cell.favoriteLabel.text = product.name
+        cell.favoriteLabel.text = product.name
 
-            cell.favoriteImageView.image = UIImage(named: "todd")
-        
-            // Load image from URL
-            if let url = URL(string: product.imageURL) {
-                downloadImage(from: url) { image in
-                    // Make sure the cell is still visible before setting the image
-                    if let visibleCell = collectionView.cellForItem(at: indexPath) as? FavoritesCell {
-                        visibleCell.favoriteImageView.image = image
-                    }
+        // Set a default image first, in case the cached/downloaded image takes time to load
+        cell.favoriteImageView.image = UIImage(named: "defaultImage")
+
+        // Check for cached image
+        if let cachedImage = imageCache[product.imageURL] {
+            cell.favoriteImageView.image = cachedImage
+        } else if let url = URL(string: product.imageURL) {
+            // Download and cache the image
+            downloadImage(from: url) { image in
+                // Make sure the cell is still visible before setting the image
+                if let visibleCell = collectionView.cellForItem(at: indexPath) as? FavoritesCell {
+                    visibleCell.favoriteImageView.image = image ?? UIImage(named: "defaultImage")
                 }
             }
-        
-        
-        
+        }
         
         return cell
-        
-        
     }
+
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-            let width = collectionView.frame.size.width / 3
-            let height = width * 1.5
-            return CGSize(width: width, height: height)
-        }
+        let spacing = self.collectionView(collectionView, layout: collectionViewLayout, minimumInteritemSpacingForSectionAt: indexPath.section)
+        let lineSpacing = self.collectionView(collectionView, layout: collectionViewLayout, minimumLineSpacingForSectionAt: indexPath.section)
+        let insets = collectionView.contentInset
+        let numberOfItemsPerRow: CGFloat = 3 // Adjust as needed
+        let totalSpacing = (numberOfItemsPerRow - 1) * spacing
+        let totalInset = insets.left + insets.right
+
+        let availableWidth = collectionView.frame.width - totalSpacing - totalInset
+        let widthPerItem = availableWidth / numberOfItemsPerRow
+        let heightPerItem = (widthPerItem * 1.5) - lineSpacing // Adjust height according to line spacing
+
+        return CGSize(width: widthPerItem, height: heightPerItem)
+    }
+
+
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -140,13 +189,16 @@ class Favorites: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         return products.count
     }
     
+    // Adjusts the spacing between items in the same row
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 1 // Your desired spacing between cells
+        return 10
     }
 
+    // Adjusts the spacing between lines in the grid
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 1 // Your desired spacing between lines
+        return 10
     }
+
 
     
     

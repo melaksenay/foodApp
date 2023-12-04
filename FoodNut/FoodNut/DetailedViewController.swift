@@ -63,6 +63,8 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
     
     var nutritionDetails: [(String)] = []
     
+    var showButton: Bool = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -79,8 +81,9 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
             (novaGroup ?? "Not available"),
             (additives ?? "Not available")
         ]
-        
-        setupAddToFavoritesButton()
+        if showButton {
+            setupAddToFavoritesButton()
+        }
         setupUI()
     }
     
@@ -162,7 +165,7 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
             tableView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            tableView.bottomAnchor.constraint(equalTo: addToFavoritesButton.topAnchor, constant: -20)
+            tableView.bottomAnchor.constraint(equalTo: showButton ? addToFavoritesButton.topAnchor : view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
     }
     
