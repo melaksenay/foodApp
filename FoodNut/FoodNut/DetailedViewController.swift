@@ -6,6 +6,36 @@
 //
 
 import UIKit
+import FirebaseCore
+import FirebaseAuth
+import FirebaseFirestore  // Import Firestore
+
+struct FirebaseProduct {
+    var code: String
+    var name: String
+    var carbsPerServing: String
+    var fatPerServing: String
+    var proteinsPerServing: String
+    var caloriesPerServing: String
+    var nutriscore: String
+    var novaGroup: String
+    var additives: String
+
+    var dictionary: [String: Any] {
+        return [
+            "code": code,
+            "name": name,
+            "carbsPerServing": carbsPerServing,
+            "fatPerServing": fatPerServing,
+            "proteinsPerServing": proteinsPerServing,
+            "caloriesPerServing": caloriesPerServing,
+            "nutriscore": nutriscore,
+            "novaGroup": novaGroup,
+            "additives": additives
+        ]
+    }
+}
+
 
 class DetailedViewController: UIViewController, UITableViewDataSource {
     var code: String?
@@ -20,6 +50,10 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
     var additives: String?
     
     var productImage: UIImage?
+    
+    var db:Firestore!
+    var handle: AuthStateDidChangeListenerHandle?
+    var userid: String?
     
     let addToFavoritesButton = UIButton(type: .system)
     var tableView: UITableView!
@@ -45,6 +79,52 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
         setupAddToFavoritesButton()
         setupUI()
     }
+    
+    private func setupAddToFavoritesButton() {
+           addToFavoritesButton.setTitle("Add to Favorites", for: .normal)  // Set button title
+           addToFavoritesButton.addTarget(self, action: #selector(addToFavoritesTapped), for: .touchUpInside)  // Button add
+           
+           view.addSubview(addToFavoritesButton)  // Add the button to the view hierarchy
+           
+           addToFavoritesButton.translatesAutoresizingMaskIntoConstraints = false  // Disable autoresizing mask translation
+           
+           // Set up constraints to position the button at the bottom right corner
+           NSLayoutConstraint.activate([
+               addToFavoritesButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+               addToFavoritesButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
+           ])
+       }
+    
+    @objc func addToFavoritesTapped() {
+        guard let userID = userid else {
+            print("User not logged in")
+            return
+        }
+
+        let product = FirebaseProduct(
+            code: code ?? "",
+            name: productName ?? "",
+            carbsPerServing: carbsPerServing ?? "",
+            fatPerServing: fatPerServing ?? "",
+            proteinsPerServing: proteinsPerServing ?? "",
+            caloriesPerServing: caloriesPerServing ?? "",
+            nutriscore: nutriscore ?? "",
+            novaGroup: novaGroup ?? "",
+            additives: additives ?? ""
+        )
+
+        let userRef = db.collection("users").document(userID)
+        userRef.updateData([
+            "userFavorites": FieldValue.arrayUnion([product.dictionary])
+        ]) { err in
+            if let err = err {
+                print("Error updating document: \(err)")
+            } else {
+                print("Document successfully updated")
+            }
+        }
+    }
+
     
     private func setupUI() {
         // Initialize image view
@@ -111,4 +191,36 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
         cell.textLabel?.numberOfLines = 0
         return cell
     }
+    
+    
+    
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Set up the authentication state listener
+        handle = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+            if let userID = user?.uid {
+                // User is signed in
+                self?.userid = userID
+            } else {
+                // No user is signed in
+                self?.userid = nil
+            }
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Remember to remove the listener when the view is disappearing
+        if let handle = handle {
+            Auth.auth().removeStateDidChangeListener(handle)
+        }
+    }
+
+    
+    
+
 }
