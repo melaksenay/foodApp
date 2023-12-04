@@ -257,7 +257,6 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
     
     func found(code: String) {
         print(code)
-
         fetchData(for: code, completion: { [weak self] productResponse in
             DispatchQueue.main.async {
                 guard let self = self else { return }
@@ -271,7 +270,6 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                     return
                 }
 
-                
                 let detailedVC = DetailedViewController()
                 // Configure detailedVC with productResponse data
                 detailedVC.code = productResponse.code
