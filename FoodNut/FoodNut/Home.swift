@@ -9,6 +9,8 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     var handle: AuthStateDidChangeListenerHandle?
     var db: Firestore!  // Firestore database reference
     var recentProductIDs: [String] = []
+    var imageCache = [String: UIImage]()
+
 
     @IBOutlet weak var recentsCollectionView: UICollectionView!
     
@@ -84,20 +86,29 @@ class Home: UIViewController, UICollectionViewDataSource, UICollectionViewDelega
     
     
     func fetchImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
-        guard let url = URL(string: urlString) else {
-            completion(nil)
-            return
-        }
+            // Check cache first
+            if let cachedImage = imageCache[urlString] {
+                completion(cachedImage)
+                return
+            }
 
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
+            // If not in cache, fetch from URL
+            guard let url = URL(string: urlString) else {
                 completion(nil)
                 return
             }
 
-            completion(UIImage(data: data))
-        }.resume()
-    }
+            URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+                guard let data = data, error == nil, let image = UIImage(data: data) else {
+                    completion(nil)
+                    return
+                }
+
+                // Store image in cache
+                self?.imageCache[urlString] = image
+                completion(image)
+            }.resume()
+        }
 
     
     

@@ -86,10 +86,11 @@ class UpdateProfileVew: UIViewController {
             guard let self = self else { return }
 
             // Check if the new username is equal to the current username
-            if newUsernameValue.lowercased() != currentUsername.lowercased() {
-                self.showError(message: "New username must match the current username.")
+            if newUsernameValue.lowercased() == currentUsername.lowercased() {
+                self.showError(message: "New username must not be the same as the current username.")
                 return
             }
+
 
             // Proceed to change the username in Firebase
             self.changeUserName(userID: userID, newUsername: newUsernameValue) { updatedUsername in

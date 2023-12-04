@@ -21,9 +21,9 @@ struct searchResponse: Decodable {
 
 struct product: Decodable {
     var code: String
-    var productName: String
+    var productName: String?
     var brands: String?
-    var imageUrl: String?
+    var imageUrl: String
     var nutriscore: Int?
     var calories: Int?
     var fat: Int?
@@ -110,6 +110,8 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     var searchedProducts: [product] = []
     
+    var imageCache: [String: UIImage] = [:]
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return searchedProducts.count
     }
@@ -121,7 +123,7 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "searchCell", for: indexPath) as! SearchCollectionViewCell //need declare cell as SearchCollectionViewCell to properly display movie poster and label
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "searchCell", for: indexPath) as! SearchCollectionViewCell
         cell.searchImageView.contentMode = .scaleAspectFill
         cell.searchImageView.clipsToBounds = true
         cell.searchLabel.numberOfLines = 0
@@ -129,25 +131,32 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         cell.layer.masksToBounds = true
 
         let specificProduct = searchedProducts[indexPath.item]
-        
-        cell.searchLabel.text = specificProduct.productName
-        
-        // Reset the image to a placeholder or nil, to avoid showing a stale image from a reused cell.
-            cell.searchImageView.image = nil
-
-            // Check if imageUrl is not nil and then download the image
-            if let imageUrlString = specificProduct.imageUrl, let url = URL(string: imageUrlString) {
-                URLSession.shared.dataTask(with: url) { data, response, error in
-                    if let data = data, let image = UIImage(data: data) {
-                        DispatchQueue.main.async {
-                            cell.searchImageView.image = image
-                        }
-                    }
-                }.resume()
+        var cellLabelName = "No Name"
+        if let prodName = specificProduct.productName{
+            if prodName.count > 0{
+                cellLabelName = prodName
             }
-                
+        }
+        cell.searchLabel.text = cellLabelName
+
+        // Reset the image to a placeholder or nil, to avoid showing a stale image from a reused cell.
+        cell.searchImageView.image = nil
+
+        // Since imageUrl is no longer optional, directly create URL
+        if let url = URL(string: specificProduct.imageUrl) {
+            // Use product code as the cache key
+            downloadImage(from: url, forCode: specificProduct.code) { image in
+                cell.searchImageView.image = image
+            }
+        } else {
+            // Set the default image if URL creation fails
+            cell.searchImageView.image = UIImage(named: "todd")
+        }
+
         return cell
     }
+
+
     
 
     @IBOutlet weak var searchBarOutlet: UISearchBar!
@@ -200,21 +209,31 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         task.resume()
     }
     
-    func downloadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    completion(image)
-                }
-            } else {
-                print("Error downloading image: \(error?.localizedDescription ?? "Unknown error")")
-                DispatchQueue.main.async {
-                    completion(nil)
+    func downloadImage(from url: URL, forCode code: String, completion: @escaping (UIImage?) -> Void) {
+            // Check if the image is already cached
+            if let cachedImage = imageCache[code] {
+                completion(cachedImage)
+                return
+            }
+
+            // Image not in cache, download it
+            let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+                guard let self = self else { return }
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        // Add the downloaded image to the cache
+                        self.imageCache[code] = image
+                        completion(image)
+                    }
+                } else {
+                    print("Error downloading image: \(error?.localizedDescription ?? "Unknown error")")
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
                 }
             }
+            task.resume()
         }
-        task.resume()
-    }
     
     
     func fetchImageURLString(for code: String) -> String {
@@ -270,10 +289,16 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
                     return
                 }
 
+                var nameLabel = "No Name"
+                if let names = productResponse.product.productName{
+                    if names.count > 0{
+                        nameLabel = names
+                    }
+                }
                 let detailedVC = DetailedViewController()
                 // Configure detailedVC with productResponse data
                 detailedVC.code = productResponse.code
-                detailedVC.productName = productResponse.product.productName ?? "No name"
+                detailedVC.productName = nameLabel
                 detailedVC.carbsPerServing = "Carb content (g): \(productResponse.product.nutriments?.carbsPerServing?.description ?? "Data not available")"
                 detailedVC.fatPerServing = "Fat content (g): \(productResponse.product.nutriments?.fatPerServing?.description ?? "Data not available")"
                 detailedVC.proteinsPerServing = "Protein content (g): \(productResponse.product.nutriments?.proteinsPerServing?.description ?? "Data not available")"
@@ -306,7 +331,8 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
 
                 let imageURLString = self.fetchImageURLString(for: code)
                 if let imageURL = URL(string: imageURLString) {
-                    self.downloadImage(from: imageURL) { image in
+                    // Download image using the updated method
+                    self.downloadImage(from: imageURL, forCode: code) { image in
                         detailedVC.productImage = image ?? UIImage(named: "defaultImage")
                         detailedVC.imageUrl = imageURLString
                         print("End downloading")
@@ -365,7 +391,7 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         }
 
         // Construct the API URL with sorting by product name
-//        let urlString = "https://world.openfoodfacts.net/api/v2/search?search_terms=\(encodedQuery)&fields=product_name,code,brands,image_front_url&sort_by=product_name"
+//        let urlString = "https://world.openfoodfacts.org/api/v2/search?search_terms=\(encodedQuery)&fields=product_name,code,brands,image_front_url&sort_by=product_name"
         
         let urlString = "https://world.openfoodfacts.org/cgi/search.pl?search_terms=\(query)&search_simple=1&action=process&json=1&fields=product_name,code,brands,image_front_url,nutriscore_score,energy-kcal,fat,proteins,carbohydrates,nova-group"
 
@@ -398,10 +424,10 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
                 
                 // Update main
                 DispatchQueue.main.async {
-                    if jsonContent.numResults <= 30 { // so we don't have more than 30 results (as per the rubric)
+                    if jsonContent.numResults <= 40 { // so we don't have more than 30 results (as per the rubric)
                         self.searchedProducts = jsonContent.results
                     } else {
-                        self.searchedProducts = Array(jsonContent.results.prefix(20))
+                        self.searchedProducts = Array(jsonContent.results.prefix(40))
                     }
                     
                     // Reloading collection view
@@ -446,6 +472,7 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         searchBarOutlet.delegate = self
         collectionViewOutlet.dataSource = self
         collectionViewOutlet.delegate = self
+        collectionViewOutlet.keyboardDismissMode = .interactive
 
         // Do any additional setup after loading the view.
     }

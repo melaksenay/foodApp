@@ -269,7 +269,53 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                     self.present(alert, animated: true, completion: nil)
                     return
                 }
+                var nutrientScore = "No Score"
+                               if let score = productResponse.product.nutriscore?.uppercased(){
+                                   nutrientScore = "NutriScore: \(score) (Click to learn more)"
+                               } else{
+                                   nutrientScore = "NutriScore: No Data (Click to learn more)"
+                               }
+                var prodName = "No Label"
+                if let name = productResponse.product.productName{
+                    prodName = name
+                }
+                var hier = ["Not Food"]
+                if let catHier = productResponse.product.catHierarchy{
+                    hier = catHier
+                }
+                if(productResponse.status == 1){
 
+                                    let newProduct = productStorage(
+
+                                        name: prodName,
+                                        
+                                        id: productResponse.code,
+
+                                        imageURL: productResponse.product.imageURL,
+
+                                        score: nutrientScore,
+
+                                        calories: "\(productResponse.product.nutriments?.caloriesPerServing.map { "\($0) calories" } ?? "Data not available")",
+
+                                        fat: "\(productResponse.product.nutriments?.fatPerServing.map { "\($0)g" } ?? "Data not available")",
+
+                                        carbs: "\(productResponse.product.nutriments?.carbsPerServing.map { "\($0)g" } ?? "Data not available")",
+
+                                        protein: "\(productResponse.product.nutriments?.proteinsPerServing.map { "\($0)g" } ?? "Data not available")" ,
+
+                                        hierarchy: hier
+
+                                    )
+
+                                    self.saveProductToUserDefaults(newProduct)
+                                }
+                else{
+                    print("Could not be found")
+                }
+
+                                    if let firstCategory = hier.first {
+                                                        self.updateCategoryScanCount(for: firstCategory)
+                                                                    }
                 let detailedVC = DetailedViewController()
                 // Configure detailedVC with productResponse data
                 detailedVC.code = productResponse.code
@@ -317,9 +363,10 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
         }, errorHandler: { [weak self] errorMessage in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                let alertController = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: "OK", style: .default))
-                self.present(alertController, animated: true, completion: nil)
+                // Present an alert with the error message
+                let alert = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(alert, animated: true, completion: nil)
             }
         })
     }
@@ -380,7 +427,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
         return []
     }
     
-    private func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void, errorHandler: @escaping (String) -> Void) {
+     func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void, errorHandler: @escaping (String) -> Void) {
         let urlString = "https://world.openfoodfacts.org/api/v2/product/\(code)"
         print("Searching open food facts for \(urlString)")
         
