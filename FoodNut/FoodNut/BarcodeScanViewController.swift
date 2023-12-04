@@ -280,12 +280,29 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 detailedVC.caloriesPerServing = "Calorie content: \(productResponse.product.nutriments?.caloriesPerServing?.description ?? "Data not available")"
                 detailedVC.nutriscore = "NutriScore: \(productResponse.product.nutriscore?.uppercased() ?? "No Data") (Click to learn more)"
                 detailedVC.novaGroup = "NOVA Group: \(productResponse.product.novaGroup?.description ?? "No Data") (Click to learn more)"
-                detailedVC.additives = "Additives: \(productResponse.product.additives?.joined(separator: ", ") ?? "No Data/No Harmful Additives")"
-                if productResponse.product.additives?.count == 0 {
-                    detailedVC.additives = "Additives: No Data/No Harmful Additives"
-                }
                 
-
+                var additivesString = ""
+                if let calledAdditives = productResponse.product.additives{
+                    print(calledAdditives)
+                    let filteredAdditiveList = calledAdditives.map{ $0.replacingOccurrences(of: "en:", with: "").uppercased()}
+                    
+                    for additive in filteredAdditiveList{
+                        if let match = self.dangerousAdditives.first(where: {$0[0].contains(additive)}){
+                            let modifiedMatch = match[0].split(separator: "-").map(String.init).last?.trimmingCharacters(in: .whitespacesAndNewlines)
+                            if let name = modifiedMatch {
+                                additivesString.append("\n\(name)\nRisk: \(match[1])\n")
+                            }
+                        }
+                    }
+                    if additivesString.count == 0 {
+                        detailedVC.additives = "Additives: No harmful additives found"
+                    }
+                    else{
+                        detailedVC.additives = "Additives: \(additivesString)"
+                
+                    }
+                    
+                }
                 let imageURLString = self.fetchImageURLString(for: code)
                 if let imageURL = URL(string: imageURLString) {
                     self.downloadImage(from: imageURL) { image in
@@ -364,7 +381,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
     }
     
     private func fetchData(for code: String, completion: @escaping (ProductResponse) -> Void, errorHandler: @escaping (String) -> Void) {
-        let urlString = "https://world.openfoodfacts.net/api/v2/product/\(code)"
+        let urlString = "https://world.openfoodfacts.org/api/v2/product/\(code)"
         print("Searching open food facts for \(urlString)")
         
         guard let url = URL(string: urlString) else {
