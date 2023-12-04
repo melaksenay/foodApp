@@ -217,7 +217,7 @@ class DetailedViewController: UIViewController, UITableViewDataSource {
 
 extension DetailedViewController: UITableViewDelegate {
      func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Assuming the "Nova Group" is the seventh item in nutritionDetails array
+        //"Nova Group" is the seventh item in nutritionDetails array
         if indexPath.row == 6 {
             let novaGroupVC = NovaGroupViewController()
             // Set any properties on novaGroupVC if needed
