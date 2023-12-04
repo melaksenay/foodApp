@@ -6,6 +6,36 @@
 //
 
 import UIKit
+import FirebaseCore
+import FirebaseAuth
+import FirebaseFirestore  // Import Firestore
+
+struct FirebaseProduct {
+    var code: String
+    var name: String
+    var carbsPerServing: String
+    var fatPerServing: String
+    var proteinsPerServing: String
+    var caloriesPerServing: String
+    var nutriscore: String
+    var novaGroup: String
+    var additives: String
+
+    var dictionary: [String: Any] {
+        return [
+            "code": code,
+            "name": name,
+            "carbsPerServing": carbsPerServing,
+            "fatPerServing": fatPerServing,
+            "proteinsPerServing": proteinsPerServing,
+            "caloriesPerServing": caloriesPerServing,
+            "nutriscore": nutriscore,
+            "novaGroup": novaGroup,
+            "additives": additives
+        ]
+    }
+}
+
 
 class DetailedViewController: UIViewController {
     var code: String?
@@ -22,11 +52,16 @@ class DetailedViewController: UIViewController {
     
     var productImage: UIImage?
     
+    var db:Firestore!
+    var handle: AuthStateDidChangeListenerHandle?
+    var userid: String?
+    
     let addToFavoritesButton = UIButton(type: .system)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
+        db = Firestore.firestore()
         
 //        print("DetailedViewController loaded with data: Code - \(code ?? "nil"), Calories - \(caloriesPerServing ?? "nil"), Fat - \(fatPerServing ?? "nil"), Proteins - \(proteinsPerServing ?? "nil"), Carbs - \(carbsPerServing ?? "nil"), Image - \(String(describing: productImage))")
         setupUI()
@@ -49,10 +84,35 @@ class DetailedViewController: UIViewController {
        }
     
     @objc func addToFavoritesTapped() {
-            // tap event.
-            print("Add to Favorites tapped!")
-            // logic to add the item to favorites is needed
+        guard let userID = userid else {
+            print("User not logged in")
+            return
         }
+
+        let product = FirebaseProduct(
+            code: code ?? "",
+            name: productName ?? "",
+            carbsPerServing: carbsPerServing ?? "",
+            fatPerServing: fatPerServing ?? "",
+            proteinsPerServing: proteinsPerServing ?? "",
+            caloriesPerServing: caloriesPerServing ?? "",
+            nutriscore: nutriscore ?? "",
+            novaGroup: novaGroup ?? "",
+            additives: additives ?? ""
+        )
+
+        let userRef = db.collection("users").document(userID)
+        userRef.updateData([
+            "userFavorites": FieldValue.arrayUnion([product.dictionary])
+        ]) { err in
+            if let err = err {
+                print("Error updating document: \(err)")
+            } else {
+                print("Document successfully updated")
+            }
+        }
+    }
+
     
     private func setupUI() {
         let stackView = UIStackView()
@@ -99,4 +159,36 @@ class DetailedViewController: UIViewController {
         label.numberOfLines = 0 //label can wrap if text is longgg
         return label
     }
+    
+    
+    
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Set up the authentication state listener
+        handle = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+            if let userID = user?.uid {
+                // User is signed in
+                self?.userid = userID
+            } else {
+                // No user is signed in
+                self?.userid = nil
+            }
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Remember to remove the listener when the view is disappearing
+        if let handle = handle {
+            Auth.auth().removeStateDidChangeListener(handle)
+        }
+    }
+
+    
+    
+
 }
