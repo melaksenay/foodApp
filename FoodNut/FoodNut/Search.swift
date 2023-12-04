@@ -283,9 +283,11 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let query = searchBarOutlet.text {
-        
+            // Replace all spaces in the query with plusses
+            let modifiedQuery = query.replacingOccurrences(of: " ", with: "+")
+
             DispatchQueue.global(qos: .userInitiated).async {
-                self.queryFood(query: query)
+                self.queryFood(query: modifiedQuery)
                 DispatchQueue.main.async {
                     
                     self.collectionViewOutlet.reloadData()
@@ -293,6 +295,7 @@ class Search: UIViewController, UICollectionViewDataSource, UICollectionViewDele
             }
         }
     }
+
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
