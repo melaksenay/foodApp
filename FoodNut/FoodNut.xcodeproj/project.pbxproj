@@ -31,6 +31,7 @@
 		4D10E81B2B02C34E00D76A32 /* onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D10E81A2B02C34E00D76A32 /* onboarding.swift */; };
 		4E6EA9842B1D67C3001DC45E /* NovaGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E6EA9832B1D67C3001DC45E /* NovaGroupViewController.swift */; };
 		4E6EA9862B1D6CA6001DC45E /* NutriScoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E6EA9852B1D6CA6001DC45E /* NutriScoreViewController.swift */; };
+		4DF9C5E82B1D4DB4002965EB /* UpdateProfileVew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF9C5E72B1D4DB3002965EB /* UpdateProfileVew.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -69,6 +70,7 @@
 		4D10E81A2B02C34E00D76A32 /* onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onboarding.swift; sourceTree = "<group>"; };
 		4E6EA9832B1D67C3001DC45E /* NovaGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NovaGroupViewController.swift; sourceTree = "<group>"; };
 		4E6EA9852B1D6CA6001DC45E /* NutriScoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutriScoreViewController.swift; sourceTree = "<group>"; };
+		4DF9C5E72B1D4DB3002965EB /* UpdateProfileVew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileVew.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 				4158C6892AFC693E005A6B06 /* DetailedViewController.swift */,
 				4E6EA9852B1D6CA6001DC45E /* NutriScoreViewController.swift */,
 				4E6EA9832B1D67C3001DC45E /* NovaGroupViewController.swift */,
+				4DF9C5E72B1D4DB3002965EB /* UpdateProfileVew.swift */,
 				08EC9CE72AFC1B6300A705B8 /* Assets.xcassets */,
 				08EC9CE92AFC1B6300A705B8 /* LaunchScreen.storyboard */,
 				4D10E81A2B02C34E00D76A32 /* onboarding.swift */,
@@ -237,6 +240,7 @@
 				08111A5D2B190711009BCBD0 /* Profile.swift in Sources */,
 				08111A752B1D4FBC009BCBD0 /* SearchCollectionViewCell.swift in Sources */,
 				0893CCFD2B0339DC00897317 /* Welcome.swift in Sources */,
+				4DF9C5E82B1D4DB4002965EB /* UpdateProfileVew.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

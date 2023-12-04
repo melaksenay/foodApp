@@ -15,6 +15,7 @@ class Weclome : UIViewController{
     
     override func viewDidLoad() {
         getStartedButton.layer.cornerRadius = 15
+        self.navigationItem.hidesBackButton = true
             
     }
     

@@ -25,6 +25,8 @@ class Profile: UIViewController {
         nameLabel.clipsToBounds = true
         updateProfile.layer.cornerRadius = updateProfile.frame.size.width / 18
         updateProfile.clipsToBounds = true
+        logoutButton.layer.cornerRadius = logoutButton.frame.size.width / 18
+        logoutButton.clipsToBounds = true
     }
 
     
@@ -55,12 +57,17 @@ class Profile: UIViewController {
     @IBAction func logoutButtonClicked(_ sender: Any) {
         let firebaseAuth = Auth.auth()
         do {
-          try firebaseAuth.signOut()
+            try firebaseAuth.signOut()
+            
+            // Navigate to the login screen with the storyboard ID 'Welcome'
+            if let welcomeViewController = UIStoryboard(name: "Main", bundle: nil)
+                .instantiateViewController(withIdentifier: "Welcome") as? Weclome {
+                // Assuming that 'WelcomeViewController' is the class of your login screen
+                navigationController?.pushViewController(welcomeViewController, animated: true)
+            }
         } catch let signOutError as NSError {
-          print("Error signing out: %@", signOutError)
+            print("Error signing out: \(signOutError)")
         }
-        
-        
     }
     
     
