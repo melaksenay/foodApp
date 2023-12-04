@@ -325,9 +325,11 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
                 }
                 
                 let imageURLString = self.fetchImageURLString(for: code)
+                
                 if let imageURL = URL(string: imageURLString) {
                     self.downloadImage(from: imageURL) { image in
                     detailedVC.productImage = image ?? UIImage (named: "defaultImage")
+                    detailedVC.imageUrl = imageURLString
                     print("end downloading")
                     print(image!)
                         
@@ -467,8 +469,7 @@ extension BarcodeScanView : AVCaptureMetadataOutputObjectsDelegate {
         }
         
         print("Product Image URL - \(finalURL)")
-        let detailedVC = DetailedViewController()
-        detailedVC.imageUrl = finalURL
+        
         
         return finalURL
     }
